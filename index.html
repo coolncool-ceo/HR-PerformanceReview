@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026년 상반기 직무평가 시스템</title>
+<style>
+:root {
+  --primary: #1e40af;
+  --primary-dark: #1e3a8a;
+  --primary-light: #dbeafe;
+  --accent: #6366f1;
+  --success: #059669;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-500: #6b7280;
+  --gray-700: #374151;
+  --gray-900: #111827;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Malgun Gothic', sans-serif; background: #eef2f7; color: var(--gray-900); font-size: 14px; line-height: 1.6; }
+
+.app-header { background: linear-gradient(135deg,#0f2460,#1e3a8a,#1d4ed8); color: white; padding: 28px 32px 24px; position: relative; overflow: hidden; }
+.app-header::before { content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.05); }
+.company-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.15); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; margin-bottom:10px; }
+.app-header h1 { font-size:24px; font-weight:800; letter-spacing:-0.5px; }
+.app-header .subtitle { font-size:12px; opacity:.65; margin-top:6px; }
+
+.user-info-badge { position:absolute; top:16px; right:20px; display:none; align-items:center; gap:10px; }
+.u-name { font-size:13px; font-weight:700; color:white; }
+.u-dept { font-size:11px; color:rgba(255,255,255,.65); }
+.btn-logout { padding:5px 13px; border-radius:6px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.12); color:white; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; transition:all .15s; }
+.btn-logout:hover { background:rgba(255,255,255,.22); }
+
+.score-bar { background:white; border-bottom:2px solid var(--primary-light); padding:12px 32px; display:flex; align-items:center; position:sticky; top:0; z-index:200; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+.score-item { display:flex; flex-direction:column; align-items:center; padding:0 20px; gap:1px; }
+.score-label { font-size:11px; color:var(--gray-500); font-weight:500; }
+.score-value { font-size:22px; font-weight:800; color:var(--primary); line-height:1; }
+.score-value.not-rated { color:var(--gray-300); font-size:18px; }
+.score-max { font-size:10px; color:var(--gray-500); }
+.score-divider { width:1px; height:36px; background:var(--gray-200); flex-shrink:0; }
+.action-btns { margin-left:auto; display:flex; gap:8px; align-items:center; }
+
+.btn { padding:8px 16px; border-radius:7px; border:none; cursor:pointer; font-size:13px; font-weight:600; font-family:inherit; transition:all .15s; display:inline-flex; align-items:center; gap:5px; }
+.btn-primary { background:var(--primary); color:white; }
+.btn-primary:hover { background:#1d4ed8; transform:translateY(-1px); }
+.btn-success { background:var(--success); color:white; }
+.btn-success:hover { background:#047857; }
+.btn-ghost { background:white; color:var(--gray-700); border:1px solid var(--gray-200); }
+.btn-ghost:hover { background:var(--gray-50); }
+.btn-danger-outline { background:white; color:var(--danger); border:1px solid #fca5a5; }
+.btn-danger-outline:hover { background:#fef2f2; }
+.btn-danger { background:var(--danger); color:white; border:1px solid var(--danger); }
+.btn-danger:hover { background:#b91c1c; border-color:#b91c1c; }
+
+.container { max-width:1060px; margin:24px auto; padding:0 16px 48px; display:flex; flex-direction:column; gap:20px; }
+
+.card { background:white; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,.07),0 4px 12px rgba(0,0,0,.04); overflow:hidden; }
+.card-header { background:linear-gradient(90deg,var(--primary-dark),var(--primary)); color:white; padding:13px 22px; font-weight:700; font-size:14px; display:flex; align-items:center; gap:8px; }
+.card-header .badge { margin-left:auto; font-size:11px; opacity:.8; font-weight:400; }
+.card-body { padding:22px; }
+
+.info-grid { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid var(--gray-200); border-radius:8px; overflow:hidden; }
+.info-cell { border-right:1px solid var(--gray-200); border-bottom:1px solid var(--gray-200); }
+.info-cell:nth-child(3n) { border-right:none; }
+.info-cell:nth-last-child(-n+3) { border-bottom:none; }
+.info-label { background:var(--gray-50); padding:8px 14px; font-size:12px; font-weight:700; color:var(--gray-700); text-align:center; border-bottom:1px solid var(--gray-200); }
+.info-input { padding:6px 14px; }
+.info-input input { width:100%; border:none; outline:none; font-family:inherit; font-size:13px; padding:4px 6px; border-radius:4px; transition:background .15s; }
+.info-input input:focus { background:var(--primary-light); }
+
+.notice-box { background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:16px 20px; list-style:none; }
+.notice-box li { padding:5px 0 5px 24px; position:relative; color:var(--gray-700); font-size:13px; line-height:1.75; }
+.notice-box li::before { content:attr(data-num)'.'; position:absolute; left:4px; font-weight:700; color:#b45309; }
+
+.section-divider { display:flex; align-items:center; gap:10px; margin:24px 0 12px; padding:12px 16px; border-radius:10px; }
+.section-divider::after { display:none; }
+.section-divider:first-child { margin-top:0; }
+.section-divider.cat-basic { background:linear-gradient(90deg,#ede9fe,#f5f3ff); border-left:4px solid #7c3aed; }
+.section-divider.cat-job   { background:linear-gradient(90deg,#dcfce7,#f0fdf4); border-left:4px solid #059669; }
+.section-divider .section-icon { font-size:17px; line-height:1; }
+.section-divider .section-name { font-weight:800; font-size:14px; flex-shrink:0; }
+.section-divider.cat-basic .section-name { color:#6d28d9; }
+.section-divider.cat-job   .section-name { color:#047857; }
+.section-divider .section-count { margin-left:auto; font-size:11px; font-weight:700; opacity:.65; }
+.section-divider.cat-basic .section-count { color:#7c3aed; }
+.section-divider.cat-job   .section-count { color:#059669; }
+
+.eval-item { border:1px solid var(--gray-200); border-radius:10px; margin-bottom:14px; transition:box-shadow .2s; }
+.eval-item:hover { box-shadow:0 4px 16px rgba(30,64,175,.1); }
+.eval-item-top { display:flex; align-items:center; gap:10px; padding:11px 16px; border-bottom:1px solid var(--gray-200); border-radius:10px 10px 0 0; }
+.item-num { width:24px; height:24px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0; }
+.item-cat { font-size:11px; background:#e0e7ff; color:var(--accent); padding:2px 9px; border-radius:20px; font-weight:700; }
+.item-name { font-weight:700; font-size:14px; }
+.eval-question { padding:10px 16px 12px; color:var(--gray-700); font-size:13px; line-height:1.8; border-bottom:1px solid var(--gray-100); }
+.score-rows { padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+.score-row { display:flex; align-items:center; gap:14px; }
+.score-row-lbl { font-size:12px; font-weight:700; color:var(--gray-500); width:72px; flex-shrink:0; }
+
+.eval-item.cat-basic { border-left:3px solid #7c3aed; }
+.eval-item.cat-job   { border-left:3px solid #059669; }
+.eval-item.cat-basic .eval-item-top { background:#faf5ff; }
+.eval-item.cat-job   .eval-item-top { background:#f0fdf4; }
+.eval-item.cat-basic .item-num { background:#7c3aed; }
+.eval-item.cat-job   .item-num { background:#059669; }
+.eval-item.cat-basic .item-cat { background:#ede9fe; color:#6d28d9; }
+.eval-item.cat-job   .item-cat { background:#dcfce7; color:#047857; }
+.eval-item.cat-basic .item-score-badge.scored { color:#7c3aed; background:#ede9fe; }
+.eval-item.cat-job   .item-score-badge.scored { color:#047857; background:#dcfce7; }
+
+.item-score-badge { min-width:52px; padding:5px 10px; display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink:0; margin-left:10px; gap:1px; color:var(--gray-300); border-radius:8px; transition:all .15s; }
+.item-score-badge.scored { color:var(--primary); background:var(--primary-light); }
+.item-score-badge .isb-num { font-size:18px; font-weight:800; line-height:1; }
+.item-score-badge .isb-lbl { font-size:10px; font-weight:700; line-height:1.2; }
+
+.grade-group { display:flex; gap:6px; }
+.grade-wrap { position:relative; }
+.grade-wrap input[type="radio"] { position:absolute; opacity:0; width:0; height:0; }
+.grade-wrap label { display:flex; flex-direction:column; align-items:center; justify-content:center; width:42px; height:42px; border:2px solid var(--gray-200); border-radius:8px; cursor:pointer; transition:all .15s; user-select:none; }
+.grade-wrap label .g-letter { font-size:15px; font-weight:800; line-height:1; }
+.grade-wrap label:hover { border-color:var(--primary); background:var(--primary-light); transform:scale(1.05); }
+.grade-n0  input:checked ~ label { background:#991b1b; border-color:#991b1b; color:white; }
+.grade-n1  input:checked ~ label { background:#dc2626; border-color:#dc2626; color:white; }
+.grade-n2  input:checked ~ label { background:#ef4444; border-color:#ef4444; color:white; }
+.grade-n3  input:checked ~ label { background:#f97316; border-color:#f97316; color:white; }
+.grade-n4  input:checked ~ label { background:#fb923c; border-color:#fb923c; color:white; }
+.grade-n5  input:checked ~ label { background:#eab308; border-color:#eab308; color:white; }
+.grade-n6  input:checked ~ label { background:#a3e635; border-color:#84cc16; color:#365314; }
+.grade-n7  input:checked ~ label { background:#22c55e; border-color:#22c55e; color:white; }
+.grade-n8  input:checked ~ label { background:#059669; border-color:#059669; color:white; }
+.grade-n9  input:checked ~ label { background:#3b82f6; border-color:#3b82f6; color:white; }
+.grade-n10 input:checked ~ label { background:#7c3aed; border-color:#7c3aed; color:white; }
+
+.totals-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.total-card { background:var(--gray-50); border:1px solid var(--gray-200); border-radius:10px; padding:18px; text-align:center; }
+.total-card.final-card { background:linear-gradient(135deg,#1e3a8a,#2563eb); color:white; border-color:transparent; box-shadow:0 4px 14px rgba(30,64,175,.35); }
+.t-lbl { font-size:12px; color:var(--gray-500); margin-bottom:4px; font-weight:600; }
+.final-card .t-lbl { color:rgba(255,255,255,.7); }
+.t-val { font-size:32px; font-weight:900; color:var(--primary); line-height:1; }
+.final-card .t-val { color:white; }
+.t-max { font-size:12px; color:var(--gray-500); margin-top:2px; }
+.final-card .t-max { color:rgba(255,255,255,.6); }
+.t-grade { display:inline-block; margin-top:10px; padding:3px 12px; border-radius:20px; font-size:12px; font-weight:800; background:var(--primary-light); color:var(--primary); }
+.final-card .t-grade { background:rgba(255,255,255,.2); color:white; }
+
+.opinion-table { border:1px solid var(--gray-200); border-radius:8px; overflow:hidden; }
+.op-row { display:grid; grid-template-columns:130px 1fr; border-bottom:1px solid var(--gray-200); }
+.op-row:last-child { border-bottom:none; }
+.op-lbl { background:var(--gray-50); padding:14px; font-size:12px; font-weight:700; color:var(--gray-700); border-right:1px solid var(--gray-200); display:flex; align-items:flex-start; word-break:keep-all; }
+.op-inp { padding:8px 12px; }
+.op-inp textarea { width:100%; border:1px solid transparent; border-radius:5px; padding:8px 10px; font-family:inherit; font-size:13px; resize:none; outline:none; min-height:80px; overflow:hidden; transition:border-color .15s,background .15s; line-height:1.7; }
+.op-inp textarea:focus { border-color:var(--primary); background:var(--primary-light); }
+.confirm-row { display:flex; align-items:center; gap:8px; padding:12px; flex-wrap:wrap; }
+.c-prefix { font-size:12px; font-weight:700; color:var(--gray-700); }
+.date-parts { display:flex; align-items:center; gap:3px; font-size:13px; }
+.date-parts input { border:none; border-bottom:1px solid var(--gray-300); width:42px; text-align:center; font-family:inherit; font-size:13px; outline:none; background:transparent; padding:2px; }
+.name-confirm { display:flex; align-items:center; gap:6px; margin-left:20px; }
+.name-confirm input { border:none; border-bottom:1px solid var(--gray-300); width:90px; text-align:center; font-family:inherit; font-size:13px; outline:none; background:transparent; padding:2px; }
+.seal-circle { width:34px; height:34px; border-radius:50%; border:1.5px solid var(--gray-300); display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--gray-400); margin-left:6px; }
+
+.toast { position:fixed; bottom:24px; right:24px; background:#1e293b; color:white; padding:12px 20px; border-radius:10px; font-size:13px; font-weight:500; box-shadow:0 4px 16px rgba(0,0,0,.25); transform:translateY(80px); opacity:0; transition:all .3s cubic-bezier(.34,1.56,.64,1); z-index:10000; pointer-events:none; }
+.toast.show { transform:translateY(0); opacity:1; }
+
+.progress-bar-wrap { background:var(--gray-100); border-radius:100px; height:4px; margin-top:14px; overflow:hidden; }
+.progress-bar { height:100%; border-radius:100px; background:linear-gradient(90deg,var(--primary),#60a5fa); transition:width .4s ease; }
+.progress-text { font-size:11px; color:var(--gray-500); margin-top:5px; text-align:right; }
+
+/* Auth */
+.auth-overlay { position:fixed; inset:0; z-index:9000; background:linear-gradient(135deg,#0f2460,#1e3a8a,#1d4ed8); display:flex; align-items:center; justify-content:center; padding:16px; }
+.auth-card { background:white; border-radius:16px; width:100%; max-width:420px; box-shadow:0 24px 64px rgba(0,0,0,.4); overflow:hidden; }
+.auth-brand { background:linear-gradient(135deg,#0f2460,#1d4ed8); color:white; padding:28px 28px 24px; text-align:center; }
+.auth-brand .brand-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.15); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; margin-bottom:10px; }
+.auth-brand h2 { font-size:20px; font-weight:800; margin-bottom:4px; }
+.auth-brand p { font-size:12px; opacity:.7; }
+.auth-tabs { display:flex; border-bottom:2px solid var(--gray-100); }
+.auth-tab-btn { flex:1; padding:13px; border:none; background:transparent; font-family:inherit; font-size:14px; font-weight:700; color:var(--gray-500); cursor:pointer; transition:all .2s; border-bottom:3px solid transparent; margin-bottom:-2px; }
+.auth-tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
+.auth-tab-btn:hover:not(.active) { background:var(--gray-50); }
+.auth-body { padding:24px 28px 28px; }
+.auth-panel { display:none; }
+.auth-panel.active { display:block; }
+.auth-field { margin-bottom:14px; }
+.auth-field label { display:block; font-size:12px; font-weight:700; color:var(--gray-700); margin-bottom:5px; }
+.auth-field input { width:100%; padding:10px 13px; border:1.5px solid var(--gray-200); border-radius:8px; font-family:inherit; font-size:13px; outline:none; transition:border-color .15s,box-shadow .15s; }
+.auth-field input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(30,64,175,.1); }
+.auth-field-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.auth-submit { width:100%; padding:12px; margin-top:6px; background:linear-gradient(135deg,#1e3a8a,#2563eb); color:white; border:none; border-radius:8px; font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; transition:all .15s; box-shadow:0 4px 14px rgba(30,64,175,.35); }
+.auth-submit:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(30,64,175,.45); }
+.auth-msg { min-height:22px; font-size:12px; text-align:center; margin-top:12px; font-weight:600; }
+.auth-msg.error { color:var(--danger); }
+.auth-msg.success { color:var(--success); }
+.auth-switch { text-align:center; margin-top:14px; font-size:12px; color:var(--gray-500); }
+.auth-switch a { color:var(--primary); cursor:pointer; text-decoration:underline; font-weight:600; }
+
+/* Password Modal */
+.pw-modal-overlay { position:fixed; inset:0; z-index:9200; background:rgba(10,20,60,.65); display:flex; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(3px); }
+.pw-modal-card { background:white; border-radius:16px; width:100%; max-width:380px; box-shadow:0 24px 64px rgba(0,0,0,.3); overflow:hidden; }
+.pw-modal-head { background:linear-gradient(135deg,#0f2460,#1d4ed8); color:white; padding:20px 24px; }
+.pw-modal-head h3 { font-size:17px; font-weight:800; margin-bottom:3px; }
+.pw-modal-head p  { font-size:12px; opacity:.7; }
+.pw-modal-body { padding:20px 24px 24px; }
+
+/* Admin */
+.admin-overlay { position:fixed; inset:0; z-index:9500; background:linear-gradient(135deg,#0f2460,#1e3a8a,#1d4ed8); display:flex; align-items:center; justify-content:center; padding:16px; }
+.admin-card { background:white; border-radius:16px; width:100%; max-width:760px; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 24px 64px rgba(0,0,0,.4); overflow:hidden; }
+.admin-panel-head { background:linear-gradient(135deg,#0f2460,#1d4ed8); color:white; padding:22px 26px; display:flex; align-items:center; justify-content:space-between; flex-shrink:0; }
+.admin-panel-body { padding:20px 24px; overflow-y:auto; flex:1; }
+.admin-panel-foot { padding:14px 24px; border-top:1px solid var(--gray-200); display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.admin-save-msg { font-size:13px; font-weight:600; color:var(--success); }
+.admin-table { width:100%; border-collapse:collapse; font-size:13px; }
+.admin-table th { background:var(--gray-50); padding:9px 12px; text-align:left; font-weight:700; color:var(--gray-700); font-size:12px; border-bottom:2px solid var(--gray-200); }
+.admin-table td { padding:10px 12px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+.admin-table tr:last-child td { border-bottom:none; }
+.admin-table tr:hover td { background:var(--gray-50); }
+.role-select { padding:6px 28px 6px 10px; border:1.5px solid var(--gray-200); border-radius:6px; font-family:inherit; font-size:12px; font-weight:700; background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%236b7280' d='M5 6L0 0h10z'/%3E%3C/svg%3E") no-repeat right 10px center; cursor:pointer; outline:none; appearance:none; }
+.role-select:focus { border-color:var(--primary); }
+
+/* Admin tabs */
+.admin-tabs { display:flex; gap:0; border-bottom:2px solid var(--gray-200); padding:0 24px; flex-shrink:0; background:white; }
+.admin-tab-btn { padding:12px 20px; border:none; background:transparent; font-family:inherit; font-size:13px; font-weight:700; color:var(--gray-500); cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all .2s; }
+.admin-tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
+.admin-tab-btn:hover:not(.active) { background:var(--gray-50); }
+/* Leader mode selection */
+.mode-sel-overlay { position:fixed; inset:0; z-index:8800; background:rgba(10,20,60,.75); display:flex; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(3px); }
+.mode-sel-card { background:white; border-radius:16px; width:100%; max-width:480px; box-shadow:0 24px 64px rgba(0,0,0,.35); overflow:hidden; }
+.mode-sel-head { background:linear-gradient(135deg,#0f2460,#1d4ed8); color:white; padding:28px; text-align:center; }
+.mode-sel-head .ms-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.15); padding:4px 12px; border-radius:20px; font-size:12px; font-weight:600; margin-bottom:10px; }
+.mode-sel-head h3 { font-size:20px; font-weight:800; margin-bottom:4px; }
+.mode-sel-head p { font-size:12px; opacity:.7; }
+.mode-sel-body { padding:24px; display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.mode-btn { border:2px solid var(--gray-200); border-radius:12px; padding:28px 16px; text-align:center; cursor:pointer; transition:all .2s; }
+.mode-btn:hover { border-color:var(--primary); background:var(--primary-light); transform:translateY(-2px); box-shadow:0 4px 16px rgba(30,64,175,.15); }
+.mode-icon { font-size:34px; margin-bottom:10px; }
+.mode-title { font-size:15px; font-weight:800; color:var(--gray-900); margin-bottom:6px; }
+.mode-desc { font-size:12px; color:var(--gray-500); line-height:1.5; }
+/* Match table */
+.match-table { width:100%; border-collapse:collapse; font-size:13px; }
+.match-table th { background:var(--gray-50); padding:9px 12px; text-align:left; font-weight:700; color:var(--gray-700); font-size:12px; border-bottom:2px solid var(--gray-200); }
+.match-table td { padding:10px 12px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+.match-table tr:last-child td { border-bottom:none; }
+.match-table tr:hover td { background:var(--gray-50); }
+/* Submitted Banner */
+.submitted-banner { display:none; background:linear-gradient(90deg,#065f46,#047857); color:white; padding:10px 32px; font-size:13px; font-weight:600; align-items:center; gap:12px; }
+.submitted-banner.show { display:flex; }
+.submitted-banner.revision-requested { background:linear-gradient(90deg,#92400e,#b45309); }
+.submitted-banner.revision-allowed  { background:linear-gradient(90deg,#1e40af,#1d4ed8); }
+.banner-revision-btn { background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.45); color:white; padding:4px 14px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; margin-left:auto; white-space:nowrap; }
+.banner-revision-btn:hover { background:rgba(255,255,255,.35); }
+.badge-revision-req { background:#fef3c7; color:#92400e; }
+.btn-allow-revision { background:#f59e0b; color:white; border:none; }
+
+/* Eval Selector */
+.eval-sel-overlay { position:fixed; inset:0; z-index:8500; background:rgba(10,20,60,.75); display:flex; align-items:center; justify-content:center; padding:16px; backdrop-filter:blur(3px); }
+.eval-sel-card { background:white; border-radius:16px; width:100%; max-width:580px; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 24px 64px rgba(0,0,0,.35); overflow:hidden; }
+.eval-sel-head { background:linear-gradient(135deg,#0f2460,#1d4ed8); color:white; padding:22px 26px; flex-shrink:0; }
+.eval-sel-head h3 { font-size:18px; font-weight:800; margin-bottom:4px; }
+.eval-sel-head p { font-size:12px; opacity:.7; }
+.eval-sel-body { padding:16px; overflow-y:auto; flex:1; }
+.eval-sel-empty { text-align:center; padding:48px 20px; color:var(--gray-500); font-size:14px; }
+.eval-row { display:flex; align-items:center; gap:14px; padding:14px 16px; border:1.5px solid var(--gray-200); border-radius:10px; margin-bottom:10px; cursor:pointer; transition:all .15s; }
+.eval-row:hover { border-color:var(--primary); background:var(--primary-light); transform:translateY(-1px); }
+.eval-row-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#1e3a8a,#2563eb); display:flex; align-items:center; justify-content:center; color:white; font-size:17px; font-weight:900; flex-shrink:0; }
+.eval-row-info { flex:1; }
+.eval-row-name { font-weight:700; font-size:15px; }
+.eval-row-meta { font-size:12px; color:var(--gray-500); margin-top:3px; }
+.eval-row-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; flex-shrink:0; }
+.badge-submitted { background:#dcfce7; color:#15803d; }
+.badge-reviewed  { background:#dbeafe; color:#1d4ed8; }
+
+.role-locked .grade-wrap label { pointer-events:none; opacity:.65; }
+.role-locked .info-input input, .role-locked .op-inp textarea { pointer-events:none; background:var(--gray-50)!important; }
+.row-readonly .grade-wrap label { pointer-events:none; opacity:.55; transform:none!important; cursor:default; }
+.row-readonly .score-row-lbl { color:var(--gray-400); font-style:italic; }
+
+/* Period management */
+.period-add-row { display:flex; gap:8px; margin-bottom:16px; align-items:center; }
+.period-add-row input { flex:1; padding:9px 13px; border:1.5px solid var(--gray-200); border-radius:8px; font-family:inherit; font-size:13px; outline:none; transition:border-color .15s; }
+.period-add-row input:focus { border-color:var(--primary); }
+.period-table { width:100%; border-collapse:collapse; font-size:13px; }
+.period-table th { background:var(--gray-50); padding:9px 12px; text-align:left; font-weight:700; color:var(--gray-700); font-size:12px; border-bottom:2px solid var(--gray-200); }
+.period-table td { padding:11px 12px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+.period-table tr:last-child td { border-bottom:none; }
+.period-active-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; background:#dcfce7; color:#15803d; }
+.period-active-badge::before { content:''; width:7px; height:7px; border-radius:50%; background:#15803d; display:inline-block; animation:pulse 1.5s infinite; }
+.period-ended-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; background:var(--gray-100); color:var(--gray-500); }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+/* Main tab bar */
+.main-tab-bar { background:white; border-bottom:2px solid var(--gray-200); padding:0 32px; display:none; position:sticky; top:0; z-index:190; box-shadow:0 2px 4px rgba(0,0,0,.05); }
+.main-tab-btn { padding:12px 22px; border:none; background:transparent; font-family:inherit; font-size:14px; font-weight:700; color:var(--gray-500); cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all .2s; }
+.main-tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
+.main-tab-btn:hover:not(.active) { background:var(--gray-50); }
+/* Job Description */
+.jd-panel { display:none; }
+.jd-field { margin-bottom:16px; }
+.jd-field label { display:block; font-size:12px; font-weight:700; color:var(--gray-700); margin-bottom:6px; }
+.jd-field textarea { width:100%; border:1.5px solid var(--gray-200); border-radius:8px; padding:10px 14px; font-family:inherit; font-size:13px; line-height:1.6; resize:none; outline:none; transition:border-color .15s; overflow:hidden; }
+.jd-field textarea:focus { border-color:var(--primary); }
+/* Period selector */
+.period-sel-item { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border:1.5px solid var(--gray-200); border-radius:10px; margin-bottom:10px; cursor:pointer; transition:all .15s; }
+.period-sel-item:hover { border-color:var(--primary); background:var(--primary-light); transform:translateY(-1px); }
+.period-sel-item.active-period { border-color:#15803d; background:#f0fdf4; }
+.period-sel-badge-active { background:#dcfce7; color:#15803d; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+.period-sel-badge-ended { background:var(--gray-100); color:var(--gray-500); font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+@media print {
+  .action-btns,.toast { display:none!important; }
+  .score-bar { position:static; box-shadow:none; }
+  body { background:white; }
+  .card { box-shadow:none; border:1px solid #ccc; page-break-inside:avoid; }
+  .app-header,.card-header,.grade-wrap label,.total-card.final-card { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="company-badge">🏢 주식회사 쿨앤쿨</div>
+  <h1 id="app-title">2026년 상반기 직무평가 시스템</h1>
+  <div class="subtitle">본 평가서는 인사비밀로 엄중히 보관됩니다 · 작성 후 저장 버튼을 눌러주세요</div>
+  <div class="user-info-badge" id="user-info-badge">
+    <div>
+      <div class="u-name" id="header-username"></div>
+      <div class="u-dept" id="header-userdept"></div>
+    </div>
+    <button class="btn-logout" id="btn-admin-panel" onclick="openAdminPanel()" style="display:none">🔧 관리자</button>
+    <button class="btn-logout" id="btn-change-pw" onclick="showPwModal()" style="display:none">🔑 비밀번호</button>
+    <button class="btn-logout" onclick="doLogout()">로그아웃</button>
+  </div>
+</header>
+
+<!-- Auth Overlay -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="brand-badge">🏢 주식회사 쿨앤쿨</div>
+      <h2 id="auth-title">직무평가 시스템</h2>
+      <p>계속하려면 로그인 또는 회원가입을 해주세요</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab-btn active" id="tab-login-btn" onclick="switchAuthTab('login')">로그인</button>
+      <button class="auth-tab-btn" id="tab-signup-btn" onclick="switchAuthTab('signup')">회원가입</button>
+    </div>
+    <div class="auth-body">
+      <div class="auth-panel active" id="panel-login">
+        <div class="auth-field"><label>아이디</label><input type="text" id="login-id" placeholder="아이디 입력" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <div class="auth-field"><label>비밀번호</label><input type="password" id="login-pw" placeholder="비밀번호 입력" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="auth-submit" onclick="doLogin()">로그인</button>
+        <div class="auth-msg" id="login-msg"></div>
+        <div class="auth-switch">계정이 없으신가요? <a onclick="switchAuthTab('signup')">회원가입</a></div>
+      </div>
+      <div class="auth-panel" id="panel-signup">
+        <div class="auth-field"><label>아이디 <span style="font-weight:400;color:var(--gray-500)">(4자 이상)</span></label><input type="text" id="signup-id" placeholder="사용할 아이디" autocomplete="username"></div>
+        <div class="auth-field-row">
+          <div class="auth-field" style="margin:0"><label>비밀번호</label><input type="password" id="signup-pw" placeholder="6자 이상"></div>
+          <div class="auth-field" style="margin:0"><label>비밀번호 확인</label><input type="password" id="signup-pw2" placeholder="재입력" onkeydown="if(event.key==='Enter')doSignup()"></div>
+        </div>
+        <div class="auth-field"><label>이름</label><input type="text" id="signup-name" placeholder="실명 입력"></div>
+        <div class="auth-field-row">
+          <div class="auth-field" style="margin:0"><label>소속 부서</label><input type="text" id="signup-dept" placeholder="부서/팀명"></div>
+          <div class="auth-field" style="margin:0"><label>직급</label><input type="text" id="signup-pos" placeholder="직급"></div>
+        </div>
+        <button class="auth-submit" onclick="doSignup()">가입하기</button>
+        <div class="auth-msg" id="signup-msg"></div>
+        <div class="auth-switch">이미 계정이 있으신가요? <a onclick="switchAuthTab('login')">로그인</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Password Change Modal -->
+<div class="pw-modal-overlay" id="pw-modal-overlay" style="display:none">
+  <div class="pw-modal-card">
+    <div class="pw-modal-head">
+      <h3>🔑 비밀번호 변경</h3>
+      <p id="pw-modal-user-label"></p>
+    </div>
+    <div class="pw-modal-body">
+      <div class="auth-field"><label>현재 비밀번호</label><input type="password" id="pc-current" placeholder="현재 비밀번호 입력" onkeydown="if(event.key==='Enter')doChangeMyPw()"></div>
+      <div class="auth-field"><label>새 비밀번호</label><input type="password" id="pc-new" placeholder="6자 이상"></div>
+      <div class="auth-field" style="margin-bottom:6px"><label>새 비밀번호 확인</label><input type="password" id="pc-new2" placeholder="재입력" onkeydown="if(event.key==='Enter')doChangeMyPw()"></div>
+      <button class="auth-submit" onclick="doChangeMyPw()">변경하기</button>
+      <div class="auth-msg" id="pc-msg"></div>
+      <div class="auth-switch" style="margin-top:10px"><a onclick="closePwModal()">취소</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Overlay -->
+<div class="admin-overlay" id="admin-overlay" style="display:none">
+  <div class="admin-card">
+    <div id="admin-panel-view">
+      <div class="admin-panel-head">
+        <div>
+          <div style="font-size:13px;opacity:.7;margin-bottom:4px">🔧 관리자 패널</div>
+          <div style="font-size:20px;font-weight:800">관리자 패널</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-ghost" id="admin-self-eval-btn" onclick="enterSelfEvalFromAdmin()" style="font-size:12px">✏️ 본인평가</button>
+          <button class="btn btn-ghost" id="admin-eval-mode-btn" onclick="enterEvalModeFromAdmin()" style="font-size:12px;display:none">📋 내 평가 모드</button>
+          <button class="btn btn-ghost" onclick="printAdminManual()" style="font-size:12px">📖 매뉴얼</button>
+          <button class="btn btn-ghost" onclick="closeAdminOverlay()" style="font-size:12px">✕ 닫기</button>
+        </div>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab-btn active" id="admin-tab-users" onclick="switchAdminTab('users')">👥 사용자 관리</button>
+        <button class="admin-tab-btn" id="admin-tab-match" onclick="switchAdminTab('match')">🔗 평가자 매칭</button>
+        <button class="admin-tab-btn" id="admin-tab-period" onclick="switchAdminTab('period')">📅 평가 기간</button>
+        <button class="admin-tab-btn" id="admin-tab-pdf" onclick="switchAdminTab('pdf')">🖨 PDF 출력</button>
+      </div>
+      <div class="admin-panel-body">
+        <div id="admin-users-view"><div id="admin-user-table"></div></div>
+        <div id="admin-match-view" style="display:none"><div id="admin-match-table"></div></div>
+        <div id="admin-period-view" style="display:none"><div id="admin-period-content"></div></div>
+        <div id="admin-pdf-view" style="display:none"><div id="admin-pdf-content"></div></div>
+      </div>
+      <div class="admin-panel-foot" id="admin-panel-foot">
+        <button class="btn btn-success" id="admin-foot-save-roles" onclick="saveAllRoles()">💾 역할 변경 저장</button>
+        <button class="btn btn-success" id="admin-foot-save-match" onclick="saveAllMatches()" style="display:none">💾 매칭 저장</button>
+        <span class="admin-save-msg" id="admin-save-msg"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Leader Mode Selection -->
+<div class="mode-sel-overlay" id="mode-sel-overlay" style="display:none">
+  <div class="mode-sel-card">
+    <div class="mode-sel-head" style="position:relative">
+      <div class="ms-badge">👔 1차 평가자</div>
+      <h3 id="mode-sel-name"></h3>
+      <p>어떤 작업을 하시겠습니까?</p>
+      <button onclick="closeModeSelModal()" style="position:absolute;top:0;right:0;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;line-height:1">✕</button>
+    </div>
+    <div class="mode-sel-body">
+      <div class="mode-btn" onclick="setLeaderMode('self')">
+        <div class="mode-icon">✏️</div>
+        <div class="mode-title">내 평가서 작성</div>
+        <div class="mode-desc">본인 역량 자기평가를<br>직접 작성합니다</div>
+      </div>
+      <div class="mode-btn" onclick="setLeaderMode('eval')">
+        <div class="mode-icon">👥</div>
+        <div class="mode-title">직원 평가하기</div>
+        <div class="mode-desc">담당 직원의 평가서를<br>검토하고 평가합니다</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Eval Selector -->
+<div class="eval-sel-overlay" id="eval-selector" style="display:none">
+  <div class="eval-sel-card">
+    <div class="eval-sel-head" style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <h3 id="eval-sel-title">📋 평가 대상자 선택</h3>
+        <p id="eval-sel-subtitle">평가할 직원의 평가서를 선택하세요</p>
+      </div>
+      <button onclick="document.getElementById('eval-selector').style.display='none'" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;line-height:1;flex-shrink:0;margin-left:12px">✕</button>
+    </div>
+    <div class="eval-sel-body">
+      <div class="eval-sel-empty" id="eval-sel-empty" style="display:none">
+        <div style="font-size:36px;margin-bottom:12px">📭</div>
+        <div>아직 제출된 평가서가 없습니다.</div>
+      </div>
+      <div id="eval-sel-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Period Confirm Modal -->
+<div class="eval-sel-overlay" id="del-period-overlay" style="display:none;z-index:9900">
+  <div class="eval-sel-card" style="max-width:420px">
+    <div class="eval-sel-head">
+      <h3>⚠️ 평가 기간 삭제</h3>
+      <p id="del-period-subtitle" style="margin:4px 0 0;font-size:13px;opacity:.85"></p>
+    </div>
+    <div class="eval-sel-body" style="padding:24px">
+      <div id="del-period-warn" style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:14px 16px;margin-bottom:20px;font-size:13px;line-height:1.6;color:#856404;display:none">
+        <strong>⚠️ 제출된 평가표가 있습니다!</strong><br>
+        이 기간의 평가 데이터가 <strong id="del-period-count">0</strong>건 존재합니다.<br>
+        삭제하면 해당 데이터를 더 이상 확인할 수 없습니다.
+      </div>
+      <p id="del-period-msg" style="font-size:14px;color:var(--gray-700);margin:0 0 24px"></p>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="document.getElementById('del-period-overlay').style.display='none'">돌아가기</button>
+        <button class="btn btn-danger" id="del-period-confirm-btn" onclick="">삭제</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Period Selector Modal -->
+<div class="eval-sel-overlay" id="period-sel-overlay" style="display:none;z-index:9300">
+  <div class="eval-sel-card" style="max-width:480px">
+    <div class="eval-sel-head" style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <h3>📅 평가 기간 선택</h3>
+        <p>조회할 평가 기간을 선택해주세요</p>
+      </div>
+      <button id="period-sel-close-btn" onclick="closePeriodSelector()" style="display:none;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;line-height:1;flex-shrink:0;margin-left:12px">✕</button>
+    </div>
+    <div class="eval-sel-body" id="period-sel-body" style="padding:20px"></div>
+  </div>
+</div>
+
+<!-- Reset User Password Modal -->
+<div class="eval-sel-overlay" id="reset-pw-overlay" style="display:none;z-index:9900">
+  <div class="eval-sel-card" style="max-width:380px">
+    <div class="eval-sel-head">
+      <h3>🔄 비밀번호 초기화</h3>
+      <p id="reset-pw-username" style="margin:4px 0 0;font-size:13px;opacity:.85"></p>
+    </div>
+    <div class="eval-sel-body" style="padding:24px">
+      <div id="reset-pw-before" >
+        <p style="font-size:14px;color:var(--gray-700);margin:0 0 24px">비밀번호를 초기화하시겠습니까?<br>새로운 랜덤 비밀번호가 생성됩니다.</p>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="btn btn-ghost" onclick="document.getElementById('reset-pw-overlay').style.display='none'">취소</button>
+          <button class="btn btn-primary" onclick="doResetUserPw()">확인</button>
+        </div>
+      </div>
+      <div id="reset-pw-after" style="display:none">
+        <p style="font-size:13px;color:var(--gray-600);margin:0 0 10px">초기화된 비밀번호:</p>
+        <div style="background:#f0f9ff;border:1.5px solid #38bdf8;border-radius:8px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
+          <span id="reset-pw-result" style="font-family:monospace;font-size:18px;font-weight:700;letter-spacing:2px;color:#0369a1"></span>
+          <button class="btn btn-ghost" style="font-size:11px;padding:4px 10px;flex-shrink:0" onclick="copyResetPw()">복사</button>
+        </div>
+        <p style="font-size:12px;color:var(--gray-500);margin:0 0 20px">이 비밀번호를 해당 직원에게 전달해 주세요.</p>
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn btn-primary" onclick="document.getElementById('reset-pw-overlay').style.display='none'">확인</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Change User Password Modal -->
+<div class="eval-sel-overlay" id="chg-pw-overlay" style="display:none;z-index:9900">
+  <div class="eval-sel-card" style="max-width:380px">
+    <div class="eval-sel-head">
+      <h3>🔑 비밀번호 변경</h3>
+      <p id="chg-pw-username" style="margin:4px 0 0;font-size:13px;opacity:.85"></p>
+    </div>
+    <div class="eval-sel-body" style="padding:24px">
+      <div class="auth-field" style="margin:0 0 12px"><label>새 비밀번호</label><input type="password" id="chg-pw-new" placeholder="4자 이상"></div>
+      <div class="auth-field" style="margin:0 0 16px"><label>비밀번호 확인</label><input type="password" id="chg-pw-new2" placeholder="재입력"></div>
+      <div class="auth-msg" id="chg-pw-msg" style="text-align:left;margin-bottom:12px"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="document.getElementById('chg-pw-overlay').style.display='none'">취소</button>
+        <button class="btn btn-primary" onclick="confirmChangeUserPw()">변경</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main-tab-bar" id="main-tab-bar">
+  <button class="main-tab-btn active" id="main-tab-jd" onclick="switchMainTab('jd')">📝 직무기술서</button>
+  <button class="main-tab-btn" id="main-tab-eval" onclick="switchMainTab('eval')">📋 인사평가</button>
+</div>
+
+<div class="score-bar" id="score-bar">
+  <div class="score-item"><span class="score-label">본인평가</span><span class="score-value not-rated" id="bar-self">—</span><span class="score-max">/ 100</span></div>
+  <div class="score-divider"></div>
+  <div class="score-item"><span class="score-label">1차 평가자 평가</span><span class="score-value not-rated" id="bar-l1">—</span><span class="score-max">/ 100</span></div>
+  <div class="score-divider"></div>
+  <div class="score-item"><span class="score-label">최종 평가자 평가</span><span class="score-value not-rated" id="bar-l2">—</span><span class="score-max">/ 100</span></div>
+  <div class="score-divider"></div>
+  <div class="score-item"><span class="score-label">종합점수</span><span class="score-value not-rated" id="bar-total">—</span><span class="score-max">/ 200</span></div>
+  <div class="action-btns">
+    <button class="btn btn-ghost" id="btn-mode-switch" onclick="showLeaderModeModal()" style="display:none">🔄 모드 전환</button>
+    <button class="btn btn-ghost" id="btn-period-switch" onclick="switchPeriod()" style="display:none">📅 기간 변경</button>
+    <button class="btn btn-ghost" id="btn-load" onclick="loadData()" style="display:none">📂 불러오기</button>
+    <button class="btn btn-success" id="btn-save" onclick="saveData()" style="display:none">💾 저장</button>
+    <button class="btn btn-primary" id="btn-submit-eval" onclick="submitEvaluation()" style="display:none">✅ 평가 제출</button>
+    <button class="btn btn-allow-revision" id="btn-allow-revision" onclick="allowRevision()" style="display:none">✏️ 수정보완 허용</button>
+    <button class="btn btn-ghost" onclick="window.print()">🖨️ 인쇄/PDF</button>
+    <button class="btn btn-danger-outline" id="btn-reset" onclick="confirmReset()" style="display:none">↩ 초기화</button>
+  </div>
+</div>
+
+<div class="submitted-banner" id="submitted-banner">
+  <span id="submitted-banner-msg">✅ 본인평가가 제출 완료되었습니다. 평가자가 검토 중입니다.</span>
+  <button class="banner-revision-btn" id="btn-revision-request" onclick="requestRevision()" style="display:none">📝 수정 요청</button>
+</div>
+
+<div class="container" id="eval-panel">
+  <!-- 인적사항 -->
+  <div class="card">
+    <div class="card-header"><span>👤</span> 피평가자 인적사항</div>
+    <div class="card-body">
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-label">소&nbsp;&nbsp;&nbsp;속</div><div class="info-input"><input type="text" id="f-dept" placeholder="부서/팀명"></div></div>
+        <div class="info-cell"><div class="info-label">직&nbsp;&nbsp;&nbsp;급</div><div class="info-input"><input type="text" id="f-pos" placeholder="직급"></div></div>
+        <div class="info-cell"><div class="info-label">성&nbsp;&nbsp;&nbsp;명</div><div class="info-input"><input type="text" id="f-name" placeholder="이름"></div></div>
+        <div class="info-cell"><div class="info-label">입사일자</div><div class="info-input"><input type="text" id="f-join" placeholder="예: 2022-03-01" maxlength="10"></div></div>
+        <div class="info-cell"><div class="info-label">생년월일</div><div class="info-input"><input type="text" id="f-birth" placeholder="예: 1990-01-01" maxlength="10"></div></div>
+        <div class="info-cell"><div class="info-label">담당직무</div><div class="info-input"><input type="text" id="f-job" placeholder="담당 직무"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 유의사항 -->
+  <div class="card">
+    <div class="card-header"><span>📋</span> 평가표 작성시 유의사항</div>
+    <div class="card-body">
+      <ul class="notice-box">
+        <li data-num="1">본 평가는 향후 직원의 승진과 연봉 계약의 기본 자료로 활용될 것이므로 공정하게 평가하시기 바랍니다.</li>
+        <li data-num="2">평가시에는 개인적인 감정이나 업무 외적인 요인이 기준이 되어서는 안됩니다.</li>
+        <li data-num="3">평가는 회사의 근간인 우수인재를 육성하기 위하여 평가자에게 부여되는 고유한 직무로서, 평가의 결과에 따라 평가자 본인도 동시에 평가받고 있다는 점을 명심하여 공정하게 평가바랍니다.</li>
+        <li data-num="4">본 평가는 평가자 이외에는 공개하지 아니하며 인사비밀로서 엄중히 보관됩니다.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 평가항목 -->
+  <div class="card">
+    <div class="card-header"><span>⭐</span> 평가 항목 <span class="badge">0~10점 · 10=탁월 · 8~9=우수 · 5~7=보통 · 2~4=미흡 · 0~1=부족</span></div>
+    <div class="card-body">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
+      <div class="progress-text" id="prog-text">0 / 10 항목 응답 완료</div>
+      <div id="eval-items-container"></div>
+    </div>
+  </div>
+
+  <!-- 본인 의견 -->
+  <div class="card" id="section-self-opinion">
+    <div class="card-header"><span>✏️</span> 본인 의견</div>
+    <div class="card-body">
+      <div class="opinion-table">
+        <div class="op-row"><div class="op-lbl">주요 업무실적</div><div class="op-inp"><textarea id="op-self-achievements" placeholder="주요 업무 실적을 기술하세요"></textarea></div></div>
+        <div class="op-row"><div class="op-lbl">우수한 점(장점)</div><div class="op-inp"><textarea id="op-self-strengths" placeholder="본인의 강점 및 우수한 점을 기술하세요"></textarea></div></div>
+        <div class="op-row"><div class="op-lbl">개선할 점(단점)</div><div class="op-inp"><textarea id="op-self-improvements" placeholder="개선이 필요한 점을 기술하세요"></textarea></div></div>
+        <div class="op-row"><div class="op-lbl">업무 계획 및 비전</div><div class="op-inp"><textarea id="op-self-plans" placeholder="업무 계획 및 비전을 기술하세요"></textarea></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 평가자1 의견 -->
+  <div class="card" id="section-l1-opinion">
+    <div class="card-header"><span>👔</span> 1차 평가자 의견</div>
+    <div class="card-body">
+      <div class="opinion-table">
+        <div class="op-row"><div class="op-lbl">주요 업무실적</div><div class="op-inp"><textarea id="op-l1-achievements" placeholder="피평가자의 주요 업무 실적을 기술하세요"></textarea></div></div>
+        <div class="op-row"><div class="op-lbl">우수한 점(장점)</div><div class="op-inp"><textarea id="op-l1-strengths" placeholder="피평가자의 강점을 기술하세요"></textarea></div></div>
+        <div class="op-row"><div class="op-lbl">개선할 점(단점)</div><div class="op-inp"><textarea id="op-l1-improvements" placeholder="개선이 필요한 점을 기술하세요"></textarea></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 평가자2 의견 -->
+  <div class="card" id="section-l2-opinion">
+    <div class="card-header"><span>👔</span> 최종 평가자 의견</div>
+    <div class="card-body">
+      <div class="opinion-table">
+        <div class="op-row"><div class="op-lbl">주요 업무실적</div><div class="op-inp"><textarea id="op-l2-achievements" placeholder="피평가자의 주요 업무 실적을 기술하세요"></textarea></div></div>
+        <div class="op-row"><div class="op-lbl">우수한 점(장점)</div><div class="op-inp"><textarea id="op-l2-strengths" placeholder="피평가자의 강점을 기술하세요"></textarea></div></div>
+        <div class="op-row"><div class="op-lbl">개선할 점(단점)</div><div class="op-inp"><textarea id="op-l2-improvements" placeholder="개선이 필요한 점을 기술하세요"></textarea></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 종합판정 -->
+  <div class="card">
+    <div class="card-header"><span>📊</span> 종합판정 및 평점</div>
+    <div class="card-body">
+      <div class="totals-grid">
+        <div class="total-card"><div class="t-lbl">본인평가 합계</div><div class="t-val" id="tot-self">—</div><div class="t-max">만점 100점</div><div class="t-grade" id="grade-self">—</div></div>
+        <div class="total-card"><div class="t-lbl">1차 평가자 합계</div><div class="t-val" id="tot-l1">—</div><div class="t-max">만점 100점</div><div class="t-grade" id="grade-l1">—</div></div>
+        <div class="total-card"><div class="t-lbl">최종 평가자 합계</div><div class="t-val" id="tot-l2">—</div><div class="t-max">만점 100점</div><div class="t-grade" id="grade-l2">—</div></div>
+        <div class="total-card final-card"><div class="t-lbl">종합점수 (1차+최종)</div><div class="t-val" id="tot-final">—</div><div class="t-max">만점 200점</div><div class="t-grade" id="grade-final">—</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Job Description Panel -->
+<div class="container jd-panel" id="jd-panel">
+  <div class="card">
+    <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
+      <span><span>📝</span> 직무기술서</span>
+      <span id="jd-period-label" style="font-size:12px;font-weight:600;background:rgba(255,255,255,.2);padding:3px 12px;border-radius:20px;opacity:.85"></span>
+    </div>
+    <div class="card-body">
+      <div class="jd-field"><label>■ 직무 개요 <span style="color:#6b7280;font-weight:400">(Job Summary)</span></label><textarea id="jd-overview" rows="3" placeholder="담당 직무의 주요 역할과 목적을 기술하세요"></textarea></div>
+      <div class="jd-field"><label>■ 주요 직무 및 책임 <span style="color:#6b7280;font-weight:400">(Key Responsibilities)</span></label><textarea id="jd-duties" rows="5" placeholder="주요 직무와 책임을 항목별로 기술하세요 (예: 1. 영업기획 및 실적관리&#10;2. 거래처 관리&#10;3. ...)"></textarea></div>
+      <div class="jd-field"><label>■ 핵심 성과지표(KPI) 및 목표 <span style="color:#6b7280;font-weight:400">(Performance Objectives)</span></label><textarea id="jd-goals" rows="4" placeholder="이번 기간 핵심 성과지표와 달성 목표를 기술하세요"></textarea></div>
+      <div class="jd-field"><label>■ 직무 수행 역량 <span style="color:#6b7280;font-weight:400">(Competencies)</span></label><textarea id="jd-skills" rows="3" placeholder="해당 직무 수행에 필요한 역량 및 보유 기술을 기술하세요"></textarea></div>
+      <div class="jd-field"><label>■ 교육 및 개발 필요사항 <span style="color:#6b7280;font-weight:400">(Development Needs)</span></label><textarea id="jd-development" rows="3" placeholder="역량 강화를 위해 필요한 교육 및 자기계발 계획을 기술하세요"></textarea></div>
+      <div class="jd-field"><label>■ 개선과제 및 실행계획 <span style="color:#6b7280;font-weight:400">(Action Plan)</span></label><textarea id="jd-action" rows="4" placeholder="업무 개선이 필요한 과제와 구체적인 실행계획을 기술하세요"></textarea></div>
+      <div class="jd-field"><label>■ 기타 의견 <span style="color:#6b7280;font-weight:400">(Remarks)</span></label><textarea id="jd-notes" rows="2" placeholder="기타 의견 및 건의사항"></textarea></div>
+    </div>
+  </div>
+  <div style="padding:16px 0 32px;display:flex;gap:10px;justify-content:flex-end">
+    <button class="btn btn-ghost" onclick="loadJD(true)">📂 불러오기</button>
+    <button class="btn btn-primary" onclick="saveJD()">💾 저장</button>
+  </div>
+</div>
+
+<div class="toast" id="toast-el"></div>
+
+<script>
+var currentUserRole  = null;
+var currentEvalKey   = null;
+var currentPeriodId  = null;
+
+var ROLE_MAP = {
+  '직원':   { key:'self',  label:'본인평가',  scoreMax:100 },
+  '리더1':  { key:'l1',   label:'1차 평가자 평가', scoreMax:100 },
+  '리더2':  { key:'l2',   label:'최종 평가자 평가', scoreMax:100 },
+  '관리자': { key:'admin', label:'관리자',    scoreMax:0   }
+};
+
+var EVAL_ITEMS = [
+  {id:1,  cat:'기본역량', name:'문제해결',    q:'문제에 직면했을 때 원인과 대책을 도출할 수 있으며, 주어진 도구와 자원을 활용하여, 부여된 과업의 누락, 동일문제 재발을 방지하는가?'},
+  {id:2,  cat:'기본역량', name:'커뮤니케이션', q:'업무 수행에 필수적인 정보를 사전 공유하며, 중간 보고 등 업무관련자와 적시에 피드백을 주고받아, 차질없이 업무를 진행하는가?'},
+  {id:3,  cat:'기본역량', name:'윤리의식',    q:'사내 내규와 조직 가치를 알고 있으며, 타 구성원에게 예의와 매너를 지키고, 조직분위기를 흐리는 등 업무 환경에 차질이 없도록 행동하는가?'},
+  {id:4,  cat:'기본역량', name:'조직몰입',    q:'자신의 업무를 부서/팀의 방향성 및 맥락하에서 이해하고, 이러한 이해를 바탕으로 업무를 수행하는가?'},
+  {id:5,  cat:'기본역량', name:'능동적자세',  q:'자신이 맡은 업무의 맥락과 요구사항을 체크하고, 부여된 업무에 책임감을 가지고 임하며, 중도에 포기하지 않는가?'},
+  {id:6,  cat:'직무역량', name:'지식마인드',  q:'업무 수행에 필요한 정보 및 지식에 관심을 가지고, 지속적으로 이를 팔로우하여, 관련 프로그램/툴, 시장 트렌드, 유관 부서 요구사항 변경, 정부 정책 등 필요한 지식을 업무에 적용하는가?'},
+  {id:7,  cat:'직무역량', name:'프로의식',    q:'업무의 우선순위 및 경중과 상관없이 업무 요구사항을 정확히 파악하고, 직무에 요구되는 전문성을 활용하여, 팀내/팀간/전후 프로세스에서 업무 진행 시 차질이 없도록 하는가?'},
+  {id:8,  cat:'직무역량', name:'목표관리',    q:'개인에게 부여된 과업에서 주요항목과 부수항목을 파악하며, 과업 목표 달성을 위해 일정을 체계적으로 관리하여, 부여된 데드라인을 준수하는가?'},
+  {id:9,  cat:'직무역량', name:'협업',        q:'자신에게 부여된 업무와 역할 외에도 필요시 조직이 최선의 해결을 얻도록 타 구성원과 적극적으로 협력하여, 조직문제 해결에 도움을 주는가?'},
+  {id:10, cat:'직무역량', name:'조직 적응력', q:'조직이 추구하는 일하기 방식을 이해하고, 자신의 업무진행 및 목표에 이를 반영하여, 기존 구성원들에게 성공적으로 융화되었는가?'}
+];
+
+var GRADES = [0,1,2,3,4,5,6,7,8,9,10];
+var ROLES  = [{key:'self',label:'본인평가'},{key:'l1',label:'1차 평가자 평가'},{key:'l2',label:'최종 평가자 평가'}];
+
+function buildEvalItems() {
+  var container = document.getElementById('eval-items-container');
+  var html = '';
+  var lastCat = '';
+  EVAL_ITEMS.forEach(function(item) {
+    if (item.cat !== lastCat) {
+      var cc = item.cat === '기본역량' ? 'cat-basic' : 'cat-job';
+      var ci = item.cat === '기본역량' ? '💡' : '⚙️';
+      var cn = EVAL_ITEMS.filter(function(i){return i.cat===item.cat;}).length;
+      html += '<div class="section-divider '+cc+'"><span class="section-icon">'+ci+'</span><span class="section-name">'+item.cat+'</span><span class="section-count">'+cn+'개 항목</span></div>';
+      lastCat = item.cat;
+    }
+    var ic = item.cat === '기본역량' ? 'cat-basic' : 'cat-job';
+    html += '<div class="eval-item '+ic+'" id="item-'+item.id+'">';
+    html += '<div class="eval-item-top"><div class="item-num">'+item.id+'</div><span class="item-cat">'+item.cat+'</span><span class="item-name">'+item.name+'</span></div>';
+    html += '<div class="eval-question">'+item.q+'</div>';
+    html += '<div class="score-rows">';
+    ROLES.forEach(function(role) {
+      html += '<div class="score-row"><span class="score-row-lbl">'+role.label+'</span><div class="grade-group" id="grades-'+item.id+'-'+role.key+'">';
+      GRADES.forEach(function(g) {
+        var iid = 'g-'+item.id+'-'+role.key+'-'+g;
+        html += '<div class="grade-wrap grade-n'+g+'"><input type="radio" name="score-'+item.id+'-'+role.key+'" id="'+iid+'" value="'+g+'" onchange="onScoreChange()"><label for="'+iid+'"><span class="g-letter">'+g+'</span></label></div>';
+      });
+      html += '</div><span class="item-score-badge" id="item-score-'+item.id+'-'+role.key+'">—</span></div>';
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+}
+
+function gradeLabel(score, max) {
+  if (score === null || score === undefined) return '—';
+  var pct = (score / max) * 100;
+  if (pct >= 100) return '탁월';
+  if (pct >= 80)  return '우수';
+  if (pct >= 50)  return '보통';
+  if (pct >= 20)  return '미흡';
+  return '부족';
+}
+
+function getScore(itemId, roleKey) {
+  var checked = document.querySelector('input[name="score-'+itemId+'-'+roleKey+'"]:checked');
+  return checked ? parseInt(checked.value) : null;
+}
+
+function calcScores() {
+  var selfScores=[], l1Scores=[], l2Scores=[];
+  EVAL_ITEMS.forEach(function(item) {
+    selfScores.push(getScore(item.id,'self'));
+    l1Scores.push(getScore(item.id,'l1'));
+    l2Scores.push(getScore(item.id,'l2'));
+  });
+  function psum(arr) { return arr.filter(function(v){return v!==null;}).reduce(function(a,b){return a+b;},0); }
+  function cnt(arr)  { return arr.filter(function(v){return v!==null;}).length; }
+  var N=EVAL_ITEMS.length;
+  var sf=cnt(selfScores), l1f=cnt(l1Scores), l2f=cnt(l2Scores);
+  var ss=sf>0?psum(selfScores):null, l1s=l1f>0?psum(l1Scores):null, l2s=l2f>0?psum(l2Scores):null;
+  var tot=(l1s!==null||l2s!==null)?(l1s||0)+(l2s||0):null;
+  return {selfSum:ss, l1Sum:l1s, l2Sum:l2s, total:tot, selfFilled:sf, l1Filled:l1f, l2Filled:l2f, N:N};
+}
+
+function updateUI() {
+  var r = calcScores();
+  function setBar(id,val) { var el=document.getElementById(id); el.textContent=val!==null?val:'—'; el.className='score-value'+(val===null?' not-rated':''); }
+  setBar('bar-self',r.selfSum); setBar('bar-l1',r.l1Sum); setBar('bar-l2',r.l2Sum); setBar('bar-total',r.total);
+  function setTot(id,val) { document.getElementById(id).textContent=val!==null?val:'—'; }
+  setTot('tot-self',r.selfSum); setTot('tot-l1',r.l1Sum); setTot('tot-l2',r.l2Sum); setTot('tot-final',r.total);
+  function gwl(sum,max,filled,N) { if(sum===null)return'—'; var lbl=gradeLabel(sum,max); return filled===N?lbl:lbl+' ('+filled+'/'+N+')'; }
+  document.getElementById('grade-self').textContent  = gwl(r.selfSum,100,r.selfFilled,r.N);
+  document.getElementById('grade-l1').textContent    = gwl(r.l1Sum,100,r.l1Filled,r.N);
+  document.getElementById('grade-l2').textContent    = gwl(r.l2Sum,100,r.l2Filled,r.N);
+  document.getElementById('grade-final').textContent = gradeLabel(r.total,200);
+
+  EVAL_ITEMS.forEach(function(item) {
+    ROLES.forEach(function(role) {
+      var s=getScore(item.id,role.key);
+      var el=document.getElementById('item-score-'+item.id+'-'+role.key);
+      if(!el)return;
+      if(s!==null) { el.innerHTML='<span class="isb-num">'+s+'</span><span class="isb-lbl">'+gradeLabel(s,10)+'</span>'; el.classList.add('scored'); }
+      else { el.textContent='—'; el.classList.remove('scored'); }
+    });
+  });
+
+  var rk=currentUserRole;
+  var filled = rk==='l1'?r.l1Filled:rk==='l2'?r.l2Filled:r.selfFilled;
+  var pct = r.N>0?Math.round((filled/r.N)*100):0;
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('prog-text').textContent=filled+' / '+r.N+' 항목 응답 완료 ('+pct+'%)';
+}
+
+function onScoreChange() { updateUI(); }
+
+function applyRoleVisibility(roleKey, locked) {
+  currentUserRole = roleKey;
+  var roleLabel = {self:'본인평가',l1:'1차 평가자 평가',l2:'최종 평가자 평가'}[roleKey]||'';
+  var isLeader = roleKey==='l1'||roleKey==='l2';
+
+  document.querySelectorAll('.score-row').forEach(function(row) {
+    var lbl=row.querySelector('.score-row-lbl');
+    if(!lbl)return;
+    var t=lbl.textContent.trim();
+    if(t===roleLabel) {
+      row.style.display='flex'; row.classList.remove('row-readonly');
+    } else if(isLeader && t==='본인평가') {
+      row.style.display='flex'; row.classList.add('row-readonly');
+    } else if(roleKey==='l2' && t==='1차 평가자 평가') {
+      row.style.display='flex'; row.classList.add('row-readonly');
+    } else {
+      row.style.display='none'; row.classList.remove('row-readonly');
+    }
+  });
+
+  document.getElementById('section-self-opinion').style.display = (roleKey==='self'||isLeader)?'':'none';
+  document.getElementById('section-l1-opinion').style.display   = (roleKey==='l1'||roleKey==='l2')?'':'none';
+  document.getElementById('section-l2-opinion').style.display   = roleKey==='l2'?'':'none';
+  if(isLeader) document.getElementById('section-self-opinion').classList.add('role-locked');
+  if(roleKey==='l2') document.getElementById('section-l1-opinion').classList.add('role-locked');
+
+  function hideBarItem(barId) {
+    var el=document.getElementById(barId); if(!el)return;
+    var item=el.closest('.score-item'), div=item?item.nextElementSibling:null;
+    if(item)item.style.display='none';
+    if(div&&div.classList.contains('score-divider'))div.style.display='none';
+  }
+  if(roleKey!=='self')hideBarItem('bar-self');
+  if(roleKey!=='l1'&&roleKey!=='l2') hideBarItem('bar-l1');
+  if(roleKey!=='l2')  hideBarItem('bar-l2');
+  hideBarItem('bar-total');
+  document.querySelectorAll('.score-bar .score-divider').forEach(function(div) {
+    var next=div.nextElementSibling;
+    if(!next||next.classList.contains('action-btns')||next.style.display==='none') div.style.display='none';
+  });
+
+  document.querySelectorAll('.total-card').forEach(function(c){c.style.display='none';});
+  if(isLeader) {
+    var sc=document.getElementById('tot-self')&&document.getElementById('tot-self').closest('.total-card');
+    if(sc)sc.style.display='';
+    var lc=document.getElementById(roleKey==='l1'?'tot-l1':'tot-l2');
+    lc=lc&&lc.closest('.total-card');
+    if(lc)lc.style.display='';
+    if(roleKey==='l2') {
+      var l1c=document.getElementById('tot-l1')&&document.getElementById('tot-l1').closest('.total-card');
+      if(l1c)l1c.style.display='';
+    }
+    var tg=document.querySelector('.totals-grid');
+    if(tg){tg.style.gridTemplateColumns=roleKey==='l2'?'1fr 1fr 1fr':'1fr 1fr';tg.style.maxWidth=roleKey==='l2'?'960px':'640px';}
+  } else {
+    var totMap={self:'tot-self',l1:'tot-l1',l2:'tot-l2'};
+    if(totMap[roleKey]) {
+      var card=document.getElementById(totMap[roleKey])&&document.getElementById(totMap[roleKey]).closest('.total-card');
+      if(card)card.style.display='';
+    }
+    var tg=document.querySelector('.totals-grid');
+    if(tg){tg.style.gridTemplateColumns='1fr';tg.style.maxWidth='320px';}
+  }
+
+  document.getElementById('btn-save').style.display = '';
+  document.getElementById('btn-reset').style.display = locked?'none':'';
+  document.getElementById('btn-load').style.display  = isLeader?'none':'';
+  document.getElementById('btn-submit-eval').style.display = (roleKey==='self'&&!locked)?'':'none';
+  document.getElementById('btn-allow-revision').style.display = 'none';
+  if(locked)document.getElementById('btn-save').style.display='none';
+
+  if(locked) {
+    document.getElementById('eval-items-container').classList.add('role-locked');
+    document.getElementById('section-self-opinion').classList.add('role-locked');
+    document.getElementById('submitted-banner').classList.add('show');
+  }
+  if(isLeader) document.querySelectorAll('.info-grid input').forEach(function(el){el.readOnly=true;el.style.background='var(--gray-50)';});
+  updateUI();
+}
+
+/* ── Period-keyed storage helpers ─────── */
+function getPeriodPrefix(){ if(currentPeriodId)return currentPeriodId; var ap=getActivePeriod(); return ap?ap.id:'default'; }
+function evalKey(uid){ return 'cnc-eval-'+getPeriodPrefix()+'-'+uid; }
+function autoSaveKey(uid){ return 'cnc-autosave-'+getPeriodPrefix()+'-'+uid; }
+
+/* ── Eval Selector ─────────────────────── */
+function getEvalIndex() { var k='cnc-index-'+getPeriodPrefix(); try{return JSON.parse(localStorage.getItem(k))||[];}catch{return[];} }
+function saveEvalIndex(idx) { localStorage.setItem('cnc-index-'+getPeriodPrefix(),JSON.stringify(idx)); }
+
+function showEvalSelector(roleKey) {
+  var idx=getEvalIndex();
+  var assign=getAssignments();
+  var leaderUid=getSession();
+  var users=getUsers();
+  var isAdmin=users[leaderUid]&&users[leaderUid].role==='관리자';
+  document.getElementById('eval-sel-title').textContent='📋 평가 대상자 선택';
+  var list=document.getElementById('eval-sel-list');
+  var empty=document.getElementById('eval-sel-empty');
+  list.innerHTML='';
+
+  // 관리자는 매칭·완료 여부 무관하게 모든 평가 자료 조회
+  var hasAssign=Object.keys(assign).length>0;
+  var pending=idx.filter(function(e){
+    if(isAdmin)return true;
+    if(roleKey==='l1')return e.status!=='l1_done';
+    if(roleKey==='l2')return e.status!=='l2_done';
+    return true;
+  });
+  if(hasAssign && !isAdmin) {
+    pending=pending.filter(function(e){
+      var empUid=e.employeeUid||'';
+      var a=assign[empUid];
+      if(!a)return false;
+      return roleKey==='l1'?a.l1===leaderUid:a.l2===leaderUid;
+    });
+  }
+
+  if(pending.length===0){
+    empty.style.display='';
+    empty.querySelector('div:last-child').textContent=isAdmin?'제출된 평가서가 없습니다.':hasAssign?'담당 배정된 피평가자의 제출 평가서가 없습니다.':'아직 제출된 평가서가 없습니다.';
+    document.getElementById('eval-selector').style.display='flex';
+    return;
+  }
+  empty.style.display='none';
+  pending.forEach(function(entry) {
+    var isDone=(roleKey==='l1'&&entry.l1Done)||(roleKey==='l2'&&entry.l2Done);
+    var isRevReq=entry.revisionRequested;
+    var bc=isDone?'badge-reviewed':isRevReq?'badge-revision-req':'badge-submitted';
+    var bt=isDone?'검토 완료':isRevReq?'수정 요청':'검토 대기';
+    var init=(entry.employeeName||'?').slice(0,1);
+    var row=document.createElement('div');
+    row.className='eval-row';
+    row.innerHTML='<div class="eval-row-avatar">'+init+'</div><div class="eval-row-info"><div class="eval-row-name">'+(entry.employeeName||'(이름없음)')+'</div><div class="eval-row-meta">'+(entry.dept||'')+(entry.pos?' · '+entry.pos:'')+'</div></div><span class="eval-row-badge '+bc+'">'+bt+'</span>';
+    row.onclick=function(){selectEvalForLeader(entry.key,roleKey);};
+    list.appendChild(row);
+  });
+  document.getElementById('eval-selector').style.display='flex';
+}
+
+function selectEvalForLeader(key,roleKey) {
+  currentEvalKey=key;
+  document.getElementById('eval-selector').style.display='none';
+  var raw=localStorage.getItem(key);
+  if(!raw){showToast('❌ 평가 데이터를 찾을 수 없습니다');return;}
+  var data=JSON.parse(raw);
+  applyData(data);
+  var done=(roleKey==='l1'&&data.leaderStatus&&data.leaderStatus.l1==='done')||(roleKey==='l2'&&data.leaderStatus&&data.leaderStatus.l2==='done');
+  applyRoleVisibility(roleKey,done);
+  var allowBtn=document.getElementById('btn-allow-revision');
+  allowBtn.style.display=(data.status==='revision_requested'&&!done)?'':'none';
+  switchMainTab('eval');
+  showToast('📂 '+(data.info&&data.info.name||'')+' 님 평가서를 불러왔습니다');
+}
+
+/* ── Revision Request ───────────────────── */
+function updateSubmittedBanner(status) {
+  var banner=document.getElementById('submitted-banner');
+  var msg=document.getElementById('submitted-banner-msg');
+  var btn=document.getElementById('btn-revision-request');
+  banner.classList.remove('revision-requested','revision-allowed');
+  if(status==='revision_requested'){
+    banner.classList.add('revision-requested');
+    msg.textContent='⏳ 수정 요청 중입니다. 평가자의 승인을 기다리세요.';
+    btn.style.display='none';
+  } else if(status==='revision_allowed'){
+    banner.classList.add('revision-allowed');
+    msg.textContent='✏️ 수정보완이 허용되었습니다. 수정 후 다시 제출하세요.';
+    btn.style.display='none';
+  } else {
+    msg.textContent='✅ 본인평가가 제출 완료되었습니다. 평가자가 검토 중입니다.';
+    btn.style.display='';
+  }
+}
+
+function requestRevision() {
+  if(!confirm('평가자에게 수정 요청을 보내시겠습니까?'))return;
+  var uid=getSession(); if(!uid)return;
+  var key=evalKey(uid);
+  var raw=localStorage.getItem(key); if(!raw)return;
+  var data=JSON.parse(raw);
+  data.status='revision_requested';
+  localStorage.setItem(key,JSON.stringify(data));
+  var idx=getEvalIndex();
+  var ei=idx.findIndex(function(e){return e.key===key;});
+  if(ei>=0){idx[ei].revisionRequested=true; saveEvalIndex(idx);}
+  updateSubmittedBanner('revision_requested');
+  showToast('📩 수정 요청이 전송되었습니다');
+}
+
+function allowRevision() {
+  if(!confirm('이 평가서의 수정을 허용하시겠습니까?'))return;
+  var key=currentEvalKey; if(!key)return;
+  var raw=localStorage.getItem(key); if(!raw)return;
+  var data=JSON.parse(raw);
+  data.status='revision_allowed';
+  localStorage.setItem(key,JSON.stringify(data));
+  var idx=getEvalIndex();
+  var ei=idx.findIndex(function(e){return e.key===key;});
+  if(ei>=0){idx[ei].revisionRequested=false; saveEvalIndex(idx);}
+  document.getElementById('btn-allow-revision').style.display='none';
+  showToast('✅ 수정보완을 허용했습니다');
+}
+
+/* ── Submit ─────────────────────────────── */
+function submitEvaluation() {
+  var missing=0;
+  EVAL_ITEMS.forEach(function(item){if(!document.querySelector('input[name="score-'+item.id+'-self"]:checked'))missing++;});
+  if(missing>0){showToast('⚠️ 본인평가 '+missing+'개 항목을 선택하지 않았습니다');return;}
+  if(!confirm('본인평가를 최종 제출하시겠습니까?\n제출 후에는 수정할 수 없습니다.'))return;
+  var data=collectData();
+  data.status='submitted';
+  data.submittedAt=new Date().toISOString();
+  var uid=getSession();
+  var key=evalKey(uid);
+  localStorage.setItem(key,JSON.stringify(data));
+  var idx=getEvalIndex();
+  var ei=idx.findIndex(function(e){return e.key===key;});
+  var entry={key:key,employeeUid:uid,employeeName:data.info.name||'(이름없음)',dept:data.info.dept||'',pos:data.info.pos||'',status:'submitted',submittedAt:data.submittedAt,l1Done:false,l2Done:false,revisionRequested:false};
+  if(ei>=0)idx[ei]=entry;else idx.push(entry);
+  saveEvalIndex(idx);
+  applyRoleVisibility('self',true);
+  updateSubmittedBanner('submitted');
+  showToast('✅ 본인평가가 제출되었습니다');
+}
+
+/* ── Auth ───────────────────────────────── */
+var AUTH_USERS_KEY='coolncool-users', AUTH_SESSION_KEY='coolncool-session', ADMIN_PW_KEY='coolncool-admin-pw';
+function hashPw(pw){var s=pw+'cnc-salt-2025',h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h)^s.charCodeAt(i);return(h>>>0).toString(36);}
+function getUsers(){try{return JSON.parse(localStorage.getItem(AUTH_USERS_KEY))||{};}catch{return{};}}
+function saveUsers(u){localStorage.setItem(AUTH_USERS_KEY,JSON.stringify(u));}
+function getSession(){return localStorage.getItem(AUTH_SESSION_KEY);}
+
+function switchAuthTab(tab) {
+  document.getElementById('panel-login').classList.toggle('active',tab==='login');
+  document.getElementById('panel-signup').classList.toggle('active',tab==='signup');
+  document.getElementById('tab-login-btn').classList.toggle('active',tab==='login');
+  document.getElementById('tab-signup-btn').classList.toggle('active',tab==='signup');
+  document.getElementById('login-msg').textContent='';
+  document.getElementById('signup-msg').textContent='';
+  setTimeout(function(){document.getElementById(tab==='login'?'login-id':'signup-id').focus();},50);
+}
+
+function setMsg(id,msg,type){var el=document.getElementById(id);el.textContent=msg;el.className='auth-msg '+(type||'');}
+
+function doLogin() {
+  var id=document.getElementById('login-id').value.trim();
+  var pw=document.getElementById('login-pw').value;
+  if(!id||!pw){setMsg('login-msg','아이디와 비밀번호를 입력해주세요.','error');return;}
+  var users=getUsers();
+  if(!users[id]||users[id].pw!==hashPw(pw)){setMsg('login-msg','아이디 또는 비밀번호가 올바르지 않습니다.','error');return;}
+  localStorage.setItem(AUTH_SESSION_KEY,id);
+  onLoginSuccess(users[id]);
+}
+
+function doSignup() {
+  var id=document.getElementById('signup-id').value.trim();
+  var pw=document.getElementById('signup-pw').value;
+  var pw2=document.getElementById('signup-pw2').value;
+  var name=document.getElementById('signup-name').value.trim();
+  var dept=document.getElementById('signup-dept').value.trim();
+  var pos=document.getElementById('signup-pos').value.trim();
+  if(!id||id.length<4){setMsg('signup-msg','아이디는 4자 이상이어야 합니다.','error');return;}
+  if(pw.length<6){setMsg('signup-msg','비밀번호는 6자 이상이어야 합니다.','error');return;}
+  if(pw!==pw2){setMsg('signup-msg','비밀번호가 일치하지 않습니다.','error');return;}
+  if(!name){setMsg('signup-msg','이름을 입력해주세요.','error');return;}
+  var users=getUsers();
+  if(users[id]){setMsg('signup-msg','이미 사용 중인 아이디입니다.','error');return;}
+  users[id]={pw:hashPw(pw),name:name,dept:dept,pos:pos,role:'직원',createdAt:new Date().toISOString()};
+  saveUsers(users);
+  setMsg('signup-msg','✅ 가입 완료! 로그인합니다...','success');
+  localStorage.setItem(AUTH_SESSION_KEY,id);
+  setTimeout(function(){onLoginSuccess(users[id]);},900);
+}
+
+function onLoginSuccess(user) {
+  document.getElementById('auth-overlay').style.display='none';
+  document.getElementById('user-info-badge').style.display='flex';
+  var roleDef=ROLE_MAP[user.role||'직원']||ROLE_MAP['직원'];
+  document.getElementById('header-username').textContent=user.name+' 님';
+  document.getElementById('header-userdept').textContent=[user.dept,user.pos,user.role].filter(Boolean).join(' · ');
+  document.getElementById('btn-change-pw').style.display='';
+  var uid=getSession(), roleKey=roleDef.key;
+
+  if(roleKey==='admin') {
+    document.getElementById('btn-admin-panel').style.display='';
+    openAdminPanel();
+    var evalRoleName=user.evalRole;
+    var adminEvalBtn=document.getElementById('admin-eval-mode-btn');
+    if(evalRoleName&&ROLE_MAP[evalRoleName]){
+      adminEvalBtn.style.display='';
+      adminEvalBtn.title='평가 역할: '+evalRoleName;
+    } else {
+      adminEvalBtn.style.display='none';
+    }
+    return;
+  }
+
+  showPeriodSelector(uid, roleKey, user);
+}
+
+function showPeriodSelector(uid, roleKey, user, cancellable) {
+  var periods=getPeriods();
+  var closeBtn=document.getElementById('period-sel-close-btn');
+  if(closeBtn) closeBtn.style.display=cancellable?'':'none';
+
+  if(periods.length===0){
+    if(cancellable){ showToast('📅 등록된 평가 기간이 없습니다'); return; }
+    currentPeriodId=null;
+    proceedAfterPeriod(uid, roleKey, user);
+    return;
+  }
+
+  // Build list of periods to display
+  var options=[];
+  periods.forEach(function(p){
+    var hasData=!!localStorage.getItem('cnc-eval-'+p.id+'-'+uid);
+    var hasIdx=false;
+    try{hasIdx=(JSON.parse(localStorage.getItem('cnc-index-'+p.id))||[]).length>0;}catch(e){}
+    if(p.status==='시행중'){
+      options.push({period:p, hasData:hasData, hasIdx:hasIdx});
+    } else {
+      if(cancellable){
+        // 기간 변경 버튼: 추가된 모든 종료 기간 표시
+        options.push({period:p, hasData:hasData, hasIdx:hasIdx});
+      } else {
+        // 로그인 시: 본인 데이터 또는 평가 인덱스가 있는 기간만
+        var canShow=hasData||(roleKey!=='self'&&hasIdx);
+        if(canShow) options.push({period:p, hasData:hasData, hasIdx:hasIdx});
+      }
+    }
+  });
+
+  if(options.length===0){
+    if(cancellable){ showToast('📅 조회 가능한 평가 기간이 없습니다'); return; }
+    var ap=getActivePeriod();
+    currentPeriodId=ap?ap.id:null;
+    proceedAfterPeriod(uid, roleKey, user);
+    return;
+  }
+  if(options.length===1){
+    if(cancellable){ showToast('📅 현재 평가 기간이 1개뿐입니다'); return; }
+    currentPeriodId=options[0].period.id;
+    proceedAfterPeriod(uid, roleKey, user);
+    return;
+  }
+
+  // Multiple options — show selector
+  var html='';
+  options.forEach(function(opt){
+    var p=opt.period;
+    var isActive=p.status==='시행중';
+    var badge=isActive
+      ?'<span class="period-sel-badge-active">시행중</span>'
+      :'<span class="period-sel-badge-ended">종료</span>';
+    var dataNote='';
+    if(opt.hasData) dataNote='<span style="font-size:11px;color:var(--gray-500);margin-top:3px;display:block">저장된 평가 데이터 있음</span>';
+    else if(!isActive&&opt.hasIdx) dataNote='<span style="font-size:11px;color:var(--gray-500);margin-top:3px;display:block">제출된 평가 내역 있음</span>';
+    html+='<div class="period-sel-item'+(isActive?' active-period':'')+'" onclick="selectPeriod(\''+p.id+'\',\''+uid+'\',\''+roleKey+'\')">'
+      +'<div><div style="font-weight:700;font-size:14px">'+p.title+'</div>'+dataNote+'</div>'
+      +badge
+      +'</div>';
+  });
+
+  // Store user for callback
+  window._periodSelUser=user;
+  document.getElementById('period-sel-body').innerHTML=html;
+  document.getElementById('period-sel-overlay').style.display='flex';
+}
+
+function closePeriodSelector() {
+  document.getElementById('period-sel-overlay').style.display='none';
+}
+
+function switchPeriod() {
+  var uid=getSession(); if(!uid)return;
+  var users=getUsers(), user=users[uid]; if(!user)return;
+  // 관리자가 본인평가/평가모드로 진입한 경우 currentUserRole(self/l1/l2)을 사용
+  var roleKey=currentUserRole||(ROLE_MAP[user.role||'직원']||ROLE_MAP['직원']).key;
+  if(roleKey==='admin') return;
+  showPeriodSelector(uid, roleKey, user, true);
+}
+
+function selectPeriod(periodId, uid, roleKey) {
+  currentPeriodId=periodId;
+  document.getElementById('period-sel-overlay').style.display='none';
+  var user=window._periodSelUser;
+  proceedAfterPeriod(uid, roleKey, user);
+}
+
+function proceedAfterPeriod(uid, roleKey, user) {
+  document.getElementById('main-tab-bar').style.display='block';
+  var btnPs=document.getElementById('btn-period-switch');
+  if(btnPs) btnPs.style.display=(roleKey!=='admin'&&getPeriods().length>1)?'':'none';
+
+  // 기간 전환 시 이전 상태 초기화
+  currentEvalKey=null;
+  document.getElementById('submitted-banner').classList.remove('show','revision-requested','revision-allowed');
+  document.getElementById('btn-allow-revision').style.display='none';
+  document.querySelectorAll('input[type="radio"]').forEach(function(r){r.checked=false;});
+  document.querySelectorAll('.info-grid input, .op-inp textarea, .jd-field textarea').forEach(function(el){el.value='';});
+  ['section-self-opinion','section-l1-opinion','section-l2-opinion'].forEach(function(id){
+    var el=document.getElementById(id);if(el){el.style.display='';el.classList.remove('role-locked');}
+  });
+  document.getElementById('eval-items-container').classList.remove('role-locked');
+  document.querySelectorAll('.info-grid input').forEach(function(el){el.readOnly=false;el.style.background='';});
+  document.querySelectorAll('.score-row').forEach(function(r){r.style.display='';r.classList.remove('row-readonly');});
+  document.querySelectorAll('.score-item,.score-divider').forEach(function(el){el.style.display='';});
+  document.querySelectorAll('.total-card').forEach(function(c){c.style.display='';});
+  var tg=document.querySelector('.totals-grid');if(tg){tg.style.gridTemplateColumns='';tg.style.maxWidth='';}
+  updateUI();
+  updateHeaderTitle();
+
+  switchMainTab('jd');
+
+  if(roleKey==='self') {
+    if(user.name&&!document.getElementById('f-name').value) document.getElementById('f-name').value=user.name;
+    if(user.dept&&!document.getElementById('f-dept').value) document.getElementById('f-dept').value=user.dept;
+    if(user.pos&&!document.getElementById('f-pos').value)   document.getElementById('f-pos').value=user.pos;
+    var mk=evalKey(uid);
+    var saved=localStorage.getItem(mk);
+    if(saved) {
+      try{
+        var data=JSON.parse(saved);
+        applyData(data);
+        var st=data.status;
+        var locked=(st==='submitted'||st==='revision_requested');
+        applyRoleVisibility('self',locked);
+        if(locked) updateSubmittedBanner(st);
+        if(st==='revision_allowed') showToast('✏️ 수정보완이 허용되었습니다. 수정 후 다시 제출하세요.');
+        else showToast(locked?'✅ 제출 완료된 평가서를 불러왔습니다':'📂 임시 저장된 평가서를 복원했습니다');
+        return;
+      }catch(e){}
+    }
+    applyRoleVisibility('self',false);
+  } else if(roleKey==='l1') {
+    showLeaderModeModal();
+  } else {
+    applyRoleVisibility(roleKey,false);
+    showEvalSelector(roleKey);
+  }
+}
+
+function showLeaderModeModal() {
+  var uid=getSession(); if(!uid)return;
+  var users=getUsers(), user=users[uid];
+  document.getElementById('mode-sel-name').textContent=(user?user.name:'')+' 님, 안녕하세요';
+  document.getElementById('mode-sel-overlay').style.display='flex';
+}
+function closeModeSelModal() {
+  document.getElementById('mode-sel-overlay').style.display='none';
+  document.getElementById('btn-mode-switch').style.display='';
+}
+
+function setLeaderMode(mode) {
+  document.getElementById('mode-sel-overlay').style.display='none';
+  document.getElementById('btn-mode-switch').style.display='';
+  var uid=getSession();
+  if(mode==='self') {
+    var users=getUsers(), user=users[uid]||{};
+    if(user.name&&!document.getElementById('f-name').value) document.getElementById('f-name').value=user.name;
+    if(user.dept&&!document.getElementById('f-dept').value) document.getElementById('f-dept').value=user.dept;
+    if(user.pos&&!document.getElementById('f-pos').value)   document.getElementById('f-pos').value=user.pos;
+    var mk=evalKey(uid);
+    var saved=localStorage.getItem(mk);
+    if(saved){
+      try{
+        var data=JSON.parse(saved);
+        applyData(data);
+        var st=data.status;
+        var locked=(st==='submitted'||st==='revision_requested');
+        applyRoleVisibility('self',locked);
+        if(locked) updateSubmittedBanner(st);
+        switchMainTab('eval');
+        if(st==='revision_allowed') showToast('✏️ 수정보완이 허용되었습니다. 수정 후 다시 제출하세요.');
+        else showToast(locked?'✅ 제출 완료된 평가서입니다':'📂 임시 저장된 평가서를 복원했습니다');
+        return;
+      }catch(e){}
+    }
+    applyRoleVisibility('self',false);
+    switchMainTab('eval');
+    showToast('✏️ 내 평가서 작성 모드');
+  } else {
+    applyRoleVisibility('l1',false);
+    showEvalSelector('l1');
+  }
+}
+
+function enterSelfEvalFromAdmin() {
+  var uid=getSession(); if(!uid)return;
+  var users=getUsers(), user=users[uid]; if(!user)return;
+  closeAdminOverlay();
+  showPeriodSelector(uid, 'self', user);
+}
+
+function enterEvalModeFromAdmin() {
+  var uid=getSession(); if(!uid)return;
+  var users=getUsers(), user=users[uid]; if(!user)return;
+  var evalRoleName=user.evalRole; if(!evalRoleName||!ROLE_MAP[evalRoleName])return;
+  closeAdminOverlay();
+  var evalRoleKey=ROLE_MAP[evalRoleName].key;
+  showPeriodSelector(uid, evalRoleKey, user);
+}
+
+/* ── Main tab + JD ─────────────────────────── */
+function switchMainTab(tab) {
+  ['eval','jd'].forEach(function(t){
+    document.getElementById('main-tab-'+t).classList.toggle('active',t===tab);
+  });
+  document.getElementById('score-bar').style.display  = tab==='eval'?'flex':'none';
+  document.getElementById('eval-panel').style.display = tab==='eval'?'flex':'none';
+  var sb=document.getElementById('submitted-banner');
+  if(tab!=='eval') sb.style.setProperty('display','none','important');
+  else sb.style.removeProperty('display');
+  document.getElementById('jd-panel').style.display   = tab==='jd'?'flex':'none';
+  if(tab==='jd') loadJD(false);
+}
+
+function jdKey(uid){ return 'cnc-jd-'+getPeriodPrefix()+'-'+uid; }
+
+function saveJD() {
+  var uid=getSession(); if(!uid){showToast('⚠️ 로그인이 필요합니다');return;}
+  var data={
+    overview:document.getElementById('jd-overview').value,
+    duties:document.getElementById('jd-duties').value,
+    goals:document.getElementById('jd-goals').value,
+    skills:document.getElementById('jd-skills').value,
+    development:document.getElementById('jd-development').value,
+    action:document.getElementById('jd-action').value,
+    notes:document.getElementById('jd-notes').value,
+    savedAt:new Date().toISOString()
+  };
+  localStorage.setItem(jdKey(uid),JSON.stringify(data));
+  showToast('💾 직무기술서가 저장되었습니다');
+}
+
+function loadJD(showMsg) {
+  var uid=getSession(); if(!uid)return;
+  var periods=getPeriods();
+  var p=periods.find(function(x){return x.id===getPeriodPrefix();});
+  var lbl=document.getElementById('jd-period-label');
+  if(lbl) lbl.textContent=p?p.title:'기본 기간';
+  var raw=localStorage.getItem(jdKey(uid));
+  if(!raw){if(showMsg)showToast('📭 저장된 직무기술서가 없습니다');return;}
+  try{
+    var data=JSON.parse(raw);
+    document.getElementById('jd-overview').value=data.overview||'';
+    document.getElementById('jd-duties').value=data.duties||'';
+    document.getElementById('jd-goals').value=data.goals||'';
+    document.getElementById('jd-skills').value=data.skills||'';
+    document.getElementById('jd-development').value=data.development||'';
+    document.getElementById('jd-action').value=data.action||'';
+    document.getElementById('jd-notes').value=data.notes||'';
+    document.querySelectorAll('.jd-field textarea').forEach(function(ta){autoResizeTextarea(ta);});
+    if(showMsg)showToast('📂 직무기술서를 불러왔습니다');
+  }catch(e){}
+}
+
+function printAdminManual() {
+  var html='<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>직무평가 시스템 관리자 매뉴얼</title>'
+  +'<style>'
+  +'body{font-family:"맑은 고딕","Malgun Gothic",sans-serif;font-size:13px;color:#111;margin:0;padding:0;line-height:1.7}'
+  +'.page{max-width:800px;margin:0 auto;padding:32px 40px}'
+  +'h1{font-size:22px;font-weight:800;color:#0f2460;border-bottom:3px solid #1d4ed8;padding-bottom:10px;margin-bottom:24px}'
+  +'h2{font-size:16px;font-weight:800;color:#1e3a8a;margin:28px 0 10px;padding:6px 14px;background:#eff6ff;border-left:4px solid #1d4ed8;border-radius:0 6px 6px 0}'
+  +'h3{font-size:14px;font-weight:700;color:#374151;margin:16px 0 6px}'
+  +'p{margin:0 0 8px}'
+  +'ul,ol{margin:4px 0 12px 20px;padding:0}'
+  +'li{margin-bottom:4px}'
+  +'.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700}'
+  +'.badge-blue{background:#dbeafe;color:#1d4ed8}'
+  +'.badge-green{background:#dcfce7;color:#15803d}'
+  +'.badge-red{background:#fee2e2;color:#991b1b}'
+  +'.badge-gray{background:#f3f4f6;color:#374151}'
+  +'.tip{background:#fefce8;border:1px solid #fde68a;border-radius:6px;padding:10px 14px;margin:10px 0;font-size:12px}'
+  +'.warn{background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:10px 14px;margin:10px 0;font-size:12px}'
+  +'table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:12px}'
+  +'th{background:#f0f4ff;padding:8px 10px;text-align:left;font-weight:700;border:1px solid #ddd}'
+  +'td{padding:8px 10px;border:1px solid #ddd;vertical-align:top}'
+  +'@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}'
+  +'</style></head><body><div class="page">'
+
+  +'<h1>🔧 주식회사 쿨앤쿨 — 직무평가 시스템 관리자 매뉴얼</h1>'
+  +'<p style="color:#6b7280;font-size:12px">작성일: '+new Date().toLocaleDateString('ko-KR')+'&nbsp;&nbsp;|&nbsp;&nbsp;관리자 전용 문서</p>'
+
+  +'<h2>1. 관리자 패널 접속</h2>'
+  +'<p>관리자 계정으로 로그인하면 자동으로 관리자 패널이 열립니다. 우측 상단 <strong>[🔧 관리자]</strong> 버튼으로도 재진입할 수 있습니다.</p>'
+  +'<p>관리자 패널 상단에는 다음 버튼이 제공됩니다.</p>'
+  +'<table><tr><th>버튼</th><th>설명</th></tr>'
+  +'<tr><td>✏️ 본인평가</td><td>관리자 자신의 본인평가 작성 화면으로 전환</td></tr>'
+  +'<tr><td>📋 내 평가 모드</td><td>배정된 직원의 평가표 검토 모드로 전환 (평가자 매칭 시 표시)</td></tr>'
+  +'<tr><td>📖 매뉴얼</td><td>이 문서를 새 창으로 열고 인쇄</td></tr>'
+  +'</table>'
+  +'<p>관리자 패널은 4개의 탭으로 구성됩니다.</p>'
+  +'<table><tr><th>탭</th><th>기능 요약</th></tr>'
+  +'<tr><td>👥 사용자 관리</td><td>가입 사용자의 역할 변경, 비밀번호 초기화/변경</td></tr>'
+  +'<tr><td>🔗 평가자 매칭</td><td>직원(피평가자)에게 리더1·리더2를 지정</td></tr>'
+  +'<tr><td>📅 평가 기간</td><td>평가 기간 제목 등록·상태 관리(시행중/종료)</td></tr>'
+  +'<tr><td>🖨 PDF 출력</td><td>기간별 제출 평가표 일괄 PDF 출력</td></tr>'
+  +'</table>'
+
+  +'<h2>2. 회원가입 및 계정 관리</h2>'
+  +'<h3>회원가입</h3>'
+  +'<p>로그인 화면 상단 [회원가입] 탭에서 신규 계정을 생성합니다.</p>'
+  +'<ul><li>아이디(4자 이상), 비밀번호(6자 이상), 이름, 소속 부서, 직급 입력 후 [가입하기] 클릭</li>'
+  +'<li>신규 가입 계정은 기본 역할이 <strong>직원</strong>으로 설정됩니다</li>'
+  +'<li>가입 후 관리자가 사용자 관리 탭에서 역할을 변경해 주어야 합니다</li></ul>'
+  +'<h3>본인 비밀번호 변경</h3>'
+  +'<p>로그인 후 우측 상단 <strong>[🔑 비밀번호]</strong> 버튼을 클릭하면 현재 비밀번호 확인 후 새 비밀번호로 변경할 수 있습니다.</p>'
+
+  +'<h2>3. 사용자 관리</h2>'
+  +'<h3>역할 구분</h3>'
+  +'<table><tr><th>역할</th><th>설명</th></tr>'
+  +'<tr><td><span class="badge badge-gray">직원</span></td><td>본인평가(자기평가)만 작성·제출</td></tr>'
+  +'<tr><td><span class="badge badge-green">리더1</span></td><td>본인평가 + 담당 직원 1차 평가 가능 (로그인 시 모드 선택)</td></tr>'
+  +'<tr><td><span class="badge badge-blue">리더2</span></td><td>배정된 직원의 평가표 검토 및 최종 의견 작성</td></tr>'
+  +'<tr><td><span class="badge badge-red">관리자</span></td><td>전체 시스템 관리, 평가 기간·매칭·사용자 관리. 본인평가·직원평가 모두 가능</td></tr>'
+  +'</table>'
+  +'<h3>비밀번호 관리 (관리자 → 직원)</h3>'
+  +'<ul><li><strong>초기화</strong>: 클릭 시 확인 팝업 → 확인하면 8자리 랜덤 비밀번호 생성 후 화면에 표시. 복사 버튼으로 클립보드 복사 가능</li>'
+  +'<li><strong>변경</strong>: 직접 원하는 비밀번호(4자 이상)로 설정 가능</li></ul>'
+  +'<div class="tip">💡 초기화 비밀번호는 화면 닫기 전 반드시 직원에게 전달하세요. 저장되지 않습니다.</div>'
+
+  +'<h2>4. 평가자 매칭</h2>'
+  +'<p>직원(피평가자)별로 리더1(1차 평가자)과 리더2(최종 평가자)를 지정합니다.</p>'
+  +'<ul><li>드롭다운에는 해당 역할을 가진 사용자와 관리자가 표시됩니다</li>'
+  +'<li>매칭이 설정되면 각 리더는 <strong>자신에게 배정된 직원의 평가표만</strong> 조회할 수 있습니다</li>'
+  +'<li>매칭 미설정 시 제출된 전체 평가표가 보입니다</li>'
+  +'<li>설정 후 반드시 <strong>[💾 매칭 저장]</strong> 버튼을 눌러야 반영됩니다</li></ul>'
+
+  +'<h2>5. 평가 기간 관리</h2>'
+  +'<ul><li><strong>추가</strong>: 상단 입력란에 기간 제목 입력 후 [+ 추가] 클릭 → 기본 상태 "종료"로 생성됨</li>'
+  +'<li><strong>시행중</strong>: 동시에 하나만 가능. 시행중 기간 제목이 헤더 및 로그인 화면에 표시됨</li>'
+  +'<li><strong>종료</strong>: 평가 마감 후 상태를 종료로 변경. 데이터는 보존됨</li>'
+  +'<li><strong>삭제</strong>: 제출된 평가표가 있으면 건수 경고 표시 후 삭제 여부 확인</li></ul>'
+  +'<div class="warn">⚠️ 평가 기간 삭제는 복구가 불가능합니다. 신중히 진행하세요.</div>'
+
+  +'<h2>6. PDF 일괄 출력</h2>'
+  +'<ol><li>PDF 출력 탭에서 기간 선택</li>'
+  +'<li>출력할 직원 평가표에 체크 (전체 선택 가능)</li>'
+  +'<li>[🖨 선택 출력] 클릭 → 새 창에서 인쇄 대화상자 자동 실행</li>'
+  +'<li>직원 1인당 1페이지로 인쇄됨. 인쇄 설정에서 "배경 그래픽 포함" 권장</li></ol>'
+  +'<p>목록에서 본인 제출 / 1차 평가자 / 최종 평가자 완료 여부를 ✅로 확인할 수 있습니다.</p>'
+  +'<div class="tip">💡 팝업 차단 설정이 되어 있으면 브라우저에서 팝업 허용 후 다시 시도하세요.</div>'
+
+  +'<h2>7. 사용자 로그인 흐름 안내</h2>'
+  +'<table><tr><th>역할</th><th>로그인 후 동작</th></tr>'
+  +'<tr><td>직원</td><td>기간 선택 → 본인평가 작성 화면 진입</td></tr>'
+  +'<tr><td>리더1</td><td>기간 선택 → 모드 선택(내 평가서 작성 / 직원 평가하기)</td></tr>'
+  +'<tr><td>리더2</td><td>기간 선택 → 평가 대상자 선택 팝업</td></tr>'
+  +'<tr><td>관리자</td><td>관리자 패널 자동 오픈. 패널 내 [✏️ 본인평가] 버튼으로 자기 평가 작성 가능</td></tr>'
+  +'</table>'
+  +'<h3>복수 기간 전환</h3>'
+  +'<p>평가 기간이 여러 개인 경우 로그인 후 기간 선택 팝업이 표시됩니다. 시행중 기간(초록 테두리)과 종료 기간 중 선택 가능합니다.</p>'
+  +'<p>평가 화면 상단 스코어바의 <strong>[📅 기간 변경]</strong> 버튼으로 기간을 재선택할 수 있습니다.</p>'
+  +'<h3>리더1 모드 전환</h3>'
+  +'<p>리더1은 평가 화면 상단 <strong>[🔄 모드 전환]</strong> 버튼을 눌러 본인평가 작성 ↔ 직원 평가 모드를 자유롭게 전환할 수 있습니다.</p>'
+
+  +'<h2>8. 평가 항목 및 점수 체계</h2>'
+  +'<p>평가 항목은 총 10개로 구성되며, 각 항목은 0~10점으로 평가합니다.</p>'
+  +'<table><tr><th>구분</th><th>항목 수</th><th>배점 합계</th></tr>'
+  +'<tr><td>🟣 기초역량</td><td>5개</td><td>최대 50점</td></tr>'
+  +'<tr><td>🟢 직무역량</td><td>5개</td><td>최대 50점</td></tr>'
+  +'<tr><td colspan="2"><strong>합계 (본인 or 리더 1회 기준)</strong></td><td><strong>최대 100점</strong></td></tr>'
+  +'</table>'
+  +'<table style="margin-top:8px"><tr><th>점수</th><th>등급 기준</th></tr>'
+  +'<tr><td>10점</td><td>탁월</td></tr>'
+  +'<tr><td>8~9점</td><td>우수</td></tr>'
+  +'<tr><td>5~7점</td><td>보통</td></tr>'
+  +'<tr><td>2~4점</td><td>미흡</td></tr>'
+  +'<tr><td>0~1점</td><td>부족</td></tr>'
+  +'</table>'
+  +'<p>상단 스코어바에는 본인평가 점수, 1차 평가자 점수, 최종 평가자 점수, 그리고 <strong>종합점수(최대 200점)</strong>가 실시간으로 표시됩니다.</p>'
+
+  +'<h2>9. 평가 제출 및 수정 요청 흐름</h2>'
+  +'<table><tr><th>단계</th><th>담당</th><th>동작</th></tr>'
+  +'<tr><td>1. 본인평가 작성</td><td>직원</td><td>10개 항목 평가 후 의견 작성 → [✅ 평가 제출] 클릭</td></tr>'
+  +'<tr><td>2. 제출 후 잠금</td><td>—</td><td>제출 후 평가표는 수정 불가. 상단에 초록 배너 표시</td></tr>'
+  +'<tr><td>3. 수정 요청</td><td>직원</td><td>배너의 [📝 수정 요청] 클릭 → 리더1에게 수정 요청 전송</td></tr>'
+  +'<tr><td>4. 수정보완 허용</td><td>리더1</td><td>평가표 상단 [✏️ 수정보완 허용] 클릭 → 직원 수정 가능 상태로 전환</td></tr>'
+  +'<tr><td>5. 재제출</td><td>직원</td><td>수정 후 다시 [✅ 평가 제출] 클릭</td></tr>'
+  +'<tr><td>6. 1차 평가</td><td>리더1</td><td>직원 제출 후 본인 평가 행(1차 평가자 행) 작성 가능</td></tr>'
+  +'<tr><td>7. 최종 평가</td><td>리더2</td><td>리더1 평가 완료 후 최종 의견 및 평가 작성</td></tr>'
+  +'</table>'
+  +'<h3>배너 상태 색상 안내</h3>'
+  +'<table><tr><th>색상</th><th>상태</th></tr>'
+  +'<tr><td>초록</td><td>평가 제출 완료 — 평가자 검토 대기</td></tr>'
+  +'<tr><td>주황</td><td>수정 요청 중 — 평가자 승인 대기</td></tr>'
+  +'<tr><td>파랑</td><td>수정보완 허용됨 — 직원 재작성 가능</td></tr>'
+  +'</table>'
+
+  +'<h2>10. 직무기술서</h2>'
+  +'<p>로그인 후 상단 탭에서 <strong>[📝 직무기술서]</strong> 탭을 선택해 작성합니다. 평가 기간별로 별도 저장됩니다.</p>'
+  +'<ul><li>담당 업무 개요, 주요 업무, 반기 목표, 필요 역량, 비고 항목 구성</li>'
+  +'<li>[💾 저장] 버튼으로 저장, [📂 불러오기]로 이전 기간 내용을 가져올 수 있습니다</li></ul>'
+
+  +'</div></body></html>';
+
+  var w=window.open('','_blank','width=900,height=750');
+  if(!w){showToast('❌ 팝업이 차단되었습니다. 팝업 허용 후 다시 시도해주세요');return;}
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  setTimeout(function(){w.print();},500);
+}
+
+function doLogout() {
+  if(!confirm('로그아웃 하시겠습니까?'))return;
+  localStorage.removeItem(AUTH_SESSION_KEY);
+  currentUserRole=null; currentEvalKey=null; currentPeriodId=null;
+  document.getElementById('main-tab-bar').style.display='none';
+  document.getElementById('jd-panel').style.display='none';
+  document.getElementById('score-bar').style.display='';
+  document.getElementById('auth-overlay').style.display='flex';
+  document.getElementById('user-info-badge').style.display='none';
+  document.getElementById('btn-admin-panel').style.display='none';
+  document.getElementById('btn-change-pw').style.display='none';
+  document.getElementById('btn-mode-switch').style.display='none';
+  document.getElementById('btn-period-switch').style.display='none';
+  document.getElementById('mode-sel-overlay').style.display='none';
+  closePwModal();
+  closeAdminOverlay();
+  document.getElementById('submitted-banner').classList.remove('show');
+  document.getElementById('eval-selector').style.display='none';
+  document.querySelectorAll('.score-row').forEach(function(r){r.style.display='';r.classList.remove('row-readonly');});
+  document.querySelectorAll('.score-item,.score-divider').forEach(function(el){el.style.display='';});
+  ['section-self-opinion','section-l1-opinion','section-l2-opinion'].forEach(function(id){
+    var el=document.getElementById(id); el.style.display=''; el.classList.remove('role-locked');
+  });
+  document.getElementById('eval-items-container').classList.remove('role-locked');
+  document.querySelectorAll('.info-grid input').forEach(function(el){el.readOnly=false;el.style.background='';});
+  document.querySelectorAll('.total-card').forEach(function(c){c.style.display='';});
+  var tg=document.querySelector('.totals-grid'); if(tg){tg.style.gridTemplateColumns='';tg.style.maxWidth='';}
+  ['btn-save','btn-load','btn-reset','btn-submit-eval'].forEach(function(id){document.getElementById(id).style.display='none';});
+  document.getElementById('login-id').value=''; document.getElementById('login-pw').value=''; document.getElementById('login-msg').textContent='';
+  resetForm();
+  switchAuthTab('login');
+}
+
+function checkSession() {
+  var uid=getSession(); if(!uid)return false;
+  var users=getUsers(); if(!users[uid]){localStorage.removeItem(AUTH_SESSION_KEY);return false;}
+  onLoginSuccess(users[uid]); return true;
+}
+
+/* ── Password Modal ─────────────────────── */
+function showPwModal() {
+  var uid=getSession(); if(!uid)return;
+  var users=getUsers(), user=users[uid];
+  document.getElementById('pw-modal-user-label').textContent=(user?user.name+' 님 ':'')+'비밀번호를 변경합니다';
+  ['pc-current','pc-new','pc-new2'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('pc-msg').textContent='';
+  document.getElementById('pw-modal-overlay').style.display='flex';
+  setTimeout(function(){document.getElementById('pc-current').focus();},100);
+}
+function closePwModal(){document.getElementById('pw-modal-overlay').style.display='none';}
+function doChangeMyPw() {
+  var uid=getSession();
+  var cur=document.getElementById('pc-current').value;
+  var nw=document.getElementById('pc-new').value;
+  var nw2=document.getElementById('pc-new2').value;
+  var msg=document.getElementById('pc-msg');
+  var users=getUsers(), user=users[uid];
+  if(!user)return;
+  if(user.pw!==hashPw(cur)){msg.textContent='현재 비밀번호가 올바르지 않습니다.';msg.className='auth-msg error';return;}
+  if(nw.length<6){msg.textContent='새 비밀번호는 6자 이상이어야 합니다.';msg.className='auth-msg error';return;}
+  if(nw!==nw2){msg.textContent='새 비밀번호가 일치하지 않습니다.';msg.className='auth-msg error';return;}
+  user.pw=hashPw(nw); saveUsers(users);
+  msg.textContent='✅ 비밀번호가 변경되었습니다.'; msg.className='auth-msg success';
+  setTimeout(closePwModal,1500);
+}
+
+/* ── Admin ──────────────────────────────── */
+function getAdminPwHash(){return localStorage.getItem(ADMIN_PW_KEY)||hashPw('admin1234');}
+function getAssignments(){try{return JSON.parse(localStorage.getItem('coolncool-assign'))||{};}catch{return{};}}
+function saveAssignments(a){localStorage.setItem('coolncool-assign',JSON.stringify(a));}
+
+function openAdminPanel() {
+  document.getElementById('admin-overlay').style.display='flex';
+  switchAdminTab('users');
+}
+function closeAdminOverlay(){document.getElementById('admin-overlay').style.display='none';}
+
+function switchAdminTab(tab) {
+  ['users','match','period','pdf'].forEach(function(t){
+    document.getElementById('admin-tab-'+t).classList.toggle('active', t===tab);
+  });
+  document.getElementById('admin-users-view').style.display  = tab==='users'?'':'none';
+  document.getElementById('admin-match-view').style.display  = tab==='match'?'':'none';
+  document.getElementById('admin-period-view').style.display = tab==='period'?'':'none';
+  document.getElementById('admin-pdf-view').style.display    = tab==='pdf'?'':'none';
+  document.getElementById('admin-foot-save-roles').style.display = tab==='users'?'':'none';
+  document.getElementById('admin-foot-save-match').style.display = tab==='match'?'':'none';
+  document.getElementById('admin-panel-foot').style.display  = (tab==='period'||tab==='pdf')?'none':'';
+  document.getElementById('admin-save-msg').textContent='';
+  if(tab==='users')  renderAdminUserTable();
+  else if(tab==='match')  renderMatchTable();
+  else if(tab==='period') renderPeriodAdmin();
+  else renderPdfAdmin();
+}
+
+/* ── 평가 기간 관리 ──────────────────────── */
+var PERIODS_KEY='coolncool-periods';
+function getPeriods(){try{return JSON.parse(localStorage.getItem(PERIODS_KEY))||[];}catch{return[];}}
+function savePeriods(p){localStorage.setItem(PERIODS_KEY,JSON.stringify(p));}
+function getActivePeriod(){return getPeriods().find(function(p){return p.status==='시행중';})||null;}
+
+function updateHeaderTitle(){
+  var periods=getPeriods();
+  var selected=currentPeriodId?periods.find(function(p){return p.id===currentPeriodId;}):null;
+  var ap=getActivePeriod();
+  var displayPeriod=selected||ap;
+  var title=displayPeriod?displayPeriod.title:'직무평가 시스템';
+  document.getElementById('app-title').textContent=title;
+  document.title=title;
+  var authTitle=document.getElementById('auth-title');
+  if(authTitle)authTitle.textContent='직무평가 시스템';
+}
+
+function renderPeriodAdmin(){
+  var periods=getPeriods();
+  var el=document.getElementById('admin-period-content');
+  var html='<div class="period-add-row">'
+    +'<input type="text" id="period-new-title" placeholder="예: 2026년 하반기 인사평가" style="flex:1">'
+    +'<button class="btn btn-primary" onclick="addPeriod()">+ 추가</button>'
+    +'</div>';
+  if(periods.length===0){
+    html+='<div style="text-align:center;padding:40px;color:var(--gray-500)">등록된 평가 기간이 없습니다.<br>위에서 새 평가 기간을 추가해주세요.</div>';
+  } else {
+    html+='<table class="period-table"><thead><tr><th>평가 기간 제목</th><th>상태</th><th>생성일</th><th style="width:180px">조작</th></tr></thead><tbody>';
+    periods.forEach(function(p){
+      var isActive=p.status==='시행중';
+      var badge=isActive
+        ?'<span class="period-active-badge">시행중</span>'
+        :'<span class="period-ended-badge">종료</span>';
+      var actionBtn=isActive
+        ?'<button class="btn btn-danger-outline" style="font-size:11px;padding:5px 10px" onclick="setPeriodStatus(\''+p.id+'\',\'종료\')">종료</button>'
+        :'<button class="btn btn-ghost" style="font-size:11px;padding:5px 10px" onclick="setPeriodStatus(\''+p.id+'\',\'시행중\')">시행중으로</button>';
+      var delBtn='<button class="btn btn-danger-outline" style="font-size:11px;padding:5px 10px;margin-left:4px" onclick="deletePeriod(\''+p.id+'\')">삭제</button>';
+      var created=p.createdAt?p.createdAt.slice(0,10):'—';
+      html+='<tr><td><strong>'+p.title+'</strong></td><td>'+badge+'</td><td style="color:var(--gray-500)">'+created+'</td><td>'+actionBtn+delBtn+'</td></tr>';
+    });
+    html+='</tbody></table>';
+  }
+  el.innerHTML=html;
+  setTimeout(function(){var inp=document.getElementById('period-new-title');if(inp)inp.focus();},50);
+}
+
+function addPeriod(){
+  var inp=document.getElementById('period-new-title');
+  var title=(inp?inp.value:'').trim();
+  if(!title){inp&&(inp.style.borderColor='var(--danger)');showToast('⚠️ 평가 기간 제목을 입력해주세요');return;}
+  var periods=getPeriods();
+  var newP={id:Date.now().toString(36),title:title,status:'종료',createdAt:new Date().toISOString()};
+  periods.unshift(newP);
+  savePeriods(periods);
+  if(inp)inp.value='';
+  renderPeriodAdmin();
+  updateHeaderTitle();
+  showToast('✅ 평가 기간이 추가되었습니다');
+}
+
+function setPeriodStatus(id,status){
+  var periods=getPeriods();
+  if(status==='시행중'){
+    var hasActive=periods.some(function(p){return p.status==='시행중'&&p.id!==id;});
+    if(hasActive&&!confirm('현재 시행중인 평가 기간을 종료하고 이 기간을 시행중으로 변경하시겠습니까?'))return;
+    periods.forEach(function(p){p.status='종료';});
+  }
+  var target=periods.find(function(p){return p.id===id;});
+  if(target)target.status=status;
+  savePeriods(periods);
+  renderPeriodAdmin();
+  updateHeaderTitle();
+  showToast(status==='시행중'?'🟢 시행중으로 변경되었습니다':'⚫ 종료로 변경되었습니다');
+}
+
+function deletePeriod(id){
+  var periods=getPeriods();
+  var target=periods.find(function(p){return p.id===id;});
+  if(!target)return;
+
+  var idx=[];
+  try{idx=JSON.parse(localStorage.getItem('cnc-index-'+id))||[];}catch(e){idx=[];}
+  var hasEvals=idx.length>0;
+
+  var subtitle='"'+target.title+'"'+(target.status==='시행중'?' (시행중)':'');
+  document.getElementById('del-period-subtitle').textContent=subtitle;
+
+  var warnEl=document.getElementById('del-period-warn');
+  var msgEl=document.getElementById('del-period-msg');
+  if(hasEvals){
+    document.getElementById('del-period-count').textContent=idx.length;
+    warnEl.style.display='';
+    msgEl.textContent='정말로 이 평가 기간을 삭제하시겠습니까?';
+  } else {
+    warnEl.style.display='none';
+    msgEl.textContent='"'+target.title+'" 평가 기간을 삭제하시겠습니까?';
+  }
+
+  var btn=document.getElementById('del-period-confirm-btn');
+  btn.onclick=function(){
+    document.getElementById('del-period-overlay').style.display='none';
+    savePeriods(periods.filter(function(p){return p.id!==id;}));
+    renderPeriodAdmin();
+    updateHeaderTitle();
+    showToast('🗑️ 삭제되었습니다');
+  };
+  document.getElementById('del-period-overlay').style.display='flex';
+}
+
+/* ── PDF 출력 ──────────────────────────────── */
+function renderPdfAdmin() {
+  var el=document.getElementById('admin-pdf-content');
+  var periods=getPeriods();
+  var html='<div style="padding:4px 0">';
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">'
+    +'<label style="font-weight:700;color:var(--gray-700);white-space:nowrap">평가 기간</label>'
+    +'<select id="pdf-period-sel" onchange="renderPdfEvalList()" style="padding:8px 12px;border:1px solid var(--gray-300);border-radius:6px;font-size:13px;flex:1">';
+  if(periods.length===0){
+    html+='<option value="">등록된 기간 없음</option>';
+  } else {
+    periods.forEach(function(p){
+      html+='<option value="'+p.id+'">'+p.title+' ('+p.status+')</option>';
+    });
+  }
+  html+='</select></div>';
+  html+='<div id="pdf-eval-list"></div></div>';
+  el.innerHTML=html;
+  if(periods.length>0) renderPdfEvalList();
+}
+
+function renderPdfEvalList() {
+  var sel=document.getElementById('pdf-period-sel');
+  var periodId=sel?sel.value:'';
+  var el=document.getElementById('pdf-eval-list');
+  if(!el) return;
+  if(!periodId){el.innerHTML='<p style="color:var(--gray-500)">기간을 선택해주세요.</p>';return;}
+  var idx=[];
+  try{idx=JSON.parse(localStorage.getItem('cnc-index-'+periodId))||[];}catch(e){idx=[];}
+  if(idx.length===0){
+    el.innerHTML='<p style="padding:24px;text-align:center;color:var(--gray-500)">해당 기간에 제출된 평가가 없습니다.</p>';
+    return;
+  }
+  var html='<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">'
+    +'<button class="btn btn-ghost" onclick="pdfSelectAll(true)" style="font-size:12px">전체 선택</button>'
+    +'<button class="btn btn-ghost" onclick="pdfSelectAll(false)" style="font-size:12px">전체 해제</button>'
+    +'<span style="flex:1"></span>'
+    +'<button class="btn btn-primary" onclick="printSelectedEvals(\''+periodId+'\')">🖨 선택 출력</button>'
+    +'</div>'
+    +'<table style="width:100%;border-collapse:collapse;font-size:13px">'
+    +'<thead><tr style="background:var(--gray-100)">'
+    +'<th style="padding:10px 8px;text-align:left;width:36px"><input type="checkbox" id="pdf-chk-all" onchange="pdfSelectAll(this.checked)"></th>'
+    +'<th style="padding:10px 8px;text-align:left">이름</th>'
+    +'<th style="padding:10px 8px;text-align:left">부서</th>'
+    +'<th style="padding:10px 8px;text-align:left">직책</th>'
+    +'<th style="padding:10px 8px;text-align:center">본인 제출</th>'
+    +'<th style="padding:10px 8px;text-align:center">1차 평가자</th>'
+    +'<th style="padding:10px 8px;text-align:center">최종 평가자</th>'
+    +'</tr></thead><tbody>';
+  idx.forEach(function(e){
+    html+='<tr style="border-bottom:1px solid var(--gray-200)">'
+      +'<td style="padding:10px 8px"><input type="checkbox" class="pdf-chk" data-key="'+(e.key||'')+'" data-uid="'+(e.employeeUid||'')+'"></td>'
+      +'<td style="padding:10px 8px;font-weight:700">'+(e.employeeName||'—')+'</td>'
+      +'<td style="padding:10px 8px">'+(e.dept||'—')+'</td>'
+      +'<td style="padding:10px 8px">'+(e.pos||'—')+'</td>'
+      +'<td style="padding:10px 8px;text-align:center">'+(e.status==='submitted'?'✅':'—')+'</td>'
+      +'<td style="padding:10px 8px;text-align:center">'+(e.l1Done?'✅':'—')+'</td>'
+      +'<td style="padding:10px 8px;text-align:center">'+(e.l2Done?'✅':'—')+'</td>'
+      +'</tr>';
+  });
+  html+='</tbody></table>';
+  el.innerHTML=html;
+}
+
+function pdfSelectAll(checked) {
+  document.querySelectorAll('.pdf-chk').forEach(function(c){c.checked=checked;});
+  var a=document.getElementById('pdf-chk-all'); if(a) a.checked=checked;
+}
+
+function printSelectedEvals(periodId) {
+  var selected=[];
+  document.querySelectorAll('.pdf-chk:checked').forEach(function(c){
+    selected.push({key:c.getAttribute('data-key'),uid:c.getAttribute('data-uid')});
+  });
+  if(selected.length===0){showToast('⚠️ 출력할 평가를 선택해주세요');return;}
+  printEvals(periodId,selected);
+}
+
+function printEvals(periodId,selected) {
+  var periods=getPeriods();
+  var period=periods.find(function(p){return p.id===periodId;})||{title:'인사평가'};
+
+  var SCORE_COLORS=['#991b1b','#dc2626','#ef4444','#f97316','#fb923c','#eab308','#84cc16','#22c55e','#059669','#3b82f6','#7c3aed'];
+  var SCORE_TEXT=['white','white','white','white','white','white','#365314','white','white','white','white'];
+
+  function calcGrade(score,max){
+    if(max===0)return '—';
+    var pct=score/max*100;
+    if(pct===100)return '탁월';
+    if(pct>=80)  return '우수';
+    if(pct>=50)  return '보통';
+    if(pct>=20)  return '미흡';
+    return '부족';
+  }
+
+  function scoreBoxes(val){
+    var html='<div class="sboxes">';
+    for(var i=0;i<=10;i++){
+      var sel=(val!==null&&val===i);
+      var bg=sel?SCORE_COLORS[i]:'#f3f4f6';
+      var tc=sel?SCORE_TEXT[i]:'#9ca3af';
+      var bdr=sel?SCORE_COLORS[i]:'#e5e7eb';
+      html+='<div class="sbox" style="background:'+bg+';color:'+tc+';border-color:'+bdr+'">'+(sel?i:i)+'</div>';
+    }
+    return html+'</div>';
+  }
+
+  function v(x){ return x!==null&&x!==undefined?Number(x):null; }
+
+  var sheets=[];
+  selected.forEach(function(sel){
+    var key=sel.key||(sel.uid?('cnc-eval-'+periodId+'-'+sel.uid):'');
+    if(!key)return;
+    var raw=localStorage.getItem(key); if(!raw)return;
+    var data; try{data=JSON.parse(raw);}catch(e){return;}
+    var info=data.info||{}, scores=data.scores||{}, opinions=data.opinions||{};
+    var selfTotal=0,l1Total=0,l2Total=0;
+
+    var itemsHtml='';
+    EVAL_ITEMS.forEach(function(item){
+      var s=scores[item.id]||{};
+      var sv=v(s.self), l1v=v(s.l1), l2v=v(s.l2);
+      if(sv!==null)selfTotal+=sv;
+      if(l1v!==null)l1Total+=l1v;
+      if(l2v!==null)l2Total+=l2v;
+      var isBasic=item.cat==='기본역량';
+      var catCls=isBasic?'basic':'job';
+      itemsHtml+='<div class="eval-item '+catCls+'">'
+        +'<div class="item-top">'
+        +'<div class="item-num">'+item.id+'</div>'
+        +'<div class="item-cat-badge">'+item.cat+'</div>'
+        +'<div class="item-name">'+item.name+'</div>'
+        +'</div>'
+        +'<div class="item-q">'+item.q+'</div>'
+        +'<div class="score-rows">'
+        +'<div class="score-row"><span class="row-lbl">본인평가</span>'+scoreBoxes(sv)+'</div>'
+        +'<div class="score-row"><span class="row-lbl">1차 평가자 평가</span>'+scoreBoxes(l1v)+'</div>'
+        +'<div class="score-row"><span class="row-lbl">최종 평가자 평가</span>'+scoreBoxes(l2v)+'</div>'
+        +'</div>'
+        +'</div>';
+    });
+
+    var leaderTotal=l1Total+l2Total;
+    var selfGrade=calcGrade(selfTotal,100);
+    var l1Grade=calcGrade(l1Total,100);
+    var l2Grade=calcGrade(l2Total,100);
+    var leaderGrade=calcGrade(leaderTotal,200);
+
+    function opCard(icon,label,rk){
+      var op=opinions[rk]||{};
+      if(!op.achievements&&!op.strengths&&!op.improvements&&!op.plans)return '';
+      return '<div class="card">'
+        +'<div class="card-header">'+icon+' '+label+'</div>'
+        +'<div class="card-body op-body">'
+        +(op.achievements?'<div class="op-row"><div class="op-lbl">주요 업무실적</div><div class="op-val">'+op.achievements+'</div></div>':'')
+        +(op.strengths?'<div class="op-row"><div class="op-lbl">우수한 점(장점)</div><div class="op-val">'+op.strengths+'</div></div>':'')
+        +(op.improvements?'<div class="op-row"><div class="op-lbl">개선할 점(단점)</div><div class="op-val">'+op.improvements+'</div></div>':'')
+        +(op.plans?'<div class="op-row"><div class="op-lbl">업무 계획 및 비전</div><div class="op-val">'+op.plans+'</div></div>':'')
+        +'</div></div>';
+    }
+
+    sheets.push('<div class="psheet">'
+      +'<div class="p-header">'
+      +'<div class="p-header-inner">'
+      +'<div class="company-badge">🏢 주식회사 쿨앤쿨</div>'
+      +'<h1>'+period.title+'</h1>'
+      +'<div class="p-date">출력일: '+new Date().toLocaleDateString('ko-KR')+'</div>'
+      +'</div></div>'
+      +'<div class="card">'
+      +'<div class="card-header">👤 피평가자 인적사항</div>'
+      +'<div class="card-body"><div class="info-grid">'
+      +'<div class="info-cell"><div class="info-lbl">소&nbsp;&nbsp;&nbsp;속</div><div class="info-val">'+(info.dept||'—')+'</div></div>'
+      +'<div class="info-cell"><div class="info-lbl">직&nbsp;&nbsp;&nbsp;급</div><div class="info-val">'+(info.pos||'—')+'</div></div>'
+      +'<div class="info-cell"><div class="info-lbl">성&nbsp;&nbsp;&nbsp;명</div><div class="info-val">'+(info.name||'—')+'</div></div>'
+      +'<div class="info-cell"><div class="info-lbl">입사일자</div><div class="info-val">'+(info.join||'—')+'</div></div>'
+      +'<div class="info-cell"><div class="info-lbl">생년월일</div><div class="info-val">'+(info.birth||'—')+'</div></div>'
+      +'<div class="info-cell"><div class="info-lbl">담당직무</div><div class="info-val">'+(info.job||'—')+'</div></div>'
+      +'</div></div></div>'
+      +'<div class="card">'
+      +'<div class="card-header">⭐ 평가 항목 <span style="margin-left:auto;font-size:11px;opacity:.8;font-weight:400">0~10점 · 10=탁월 · 8~9=우수 · 5~7=보통 · 2~4=미흡 · 0~1=부족</span></div>'
+      +'<div class="card-body">'+itemsHtml+'</div></div>'
+      +opCard('✏️','본인 의견','self')
+      +opCard('👔','1차 평가자 의견','l1')
+      +opCard('👔','최종 평가자 의견','l2')
+      +'<div class="card">'
+      +'<div class="card-header">📊 종합판정 및 평점</div>'
+      +'<div class="card-body"><div class="totals-grid">'
+      +'<div class="total-card"><div class="t-lbl">본인평가 합계</div><div class="t-val">'+selfTotal+'</div><div class="t-max">만점 100점</div><div class="t-grade">'+selfGrade+'</div></div>'
+      +'<div class="total-card"><div class="t-lbl">1차 평가자 합계</div><div class="t-val">'+l1Total+'</div><div class="t-max">만점 100점</div><div class="t-grade">'+l1Grade+'</div></div>'
+      +'<div class="total-card"><div class="t-lbl">최종 평가자 합계</div><div class="t-val">'+l2Total+'</div><div class="t-max">만점 100점</div><div class="t-grade">'+l2Grade+'</div></div>'
+      +'<div class="total-card final-card"><div class="t-lbl">종합점수 (1차+최종)</div><div class="t-val">'+leaderTotal+'</div><div class="t-max">만점 200점</div><div class="t-grade">'+leaderGrade+'</div></div>'
+      +'</div></div></div>'
+      +'</div>');
+  });
+
+  if(sheets.length===0){showToast('❌ 불러올 평가 데이터가 없습니다');return;}
+
+  var css='*{box-sizing:border-box;margin:0;padding:0}'
+    +'body{font-family:"맑은 고딕","Malgun Gothic",sans-serif;font-size:13px;background:#eef2f7;color:#111827;line-height:1.6}'
+    +'.psheet{max-width:860px;margin:0 auto 0;padding-bottom:40px}'
+    +'/* header */'
+    +'.p-header{background:linear-gradient(135deg,#0f2460,#1e3a8a,#1d4ed8);color:white;padding:24px 32px;margin-bottom:0}'
+    +'.p-header-inner{}'
+    +'.company-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:8px}'
+    +'.p-header h1{font-size:22px;font-weight:800;letter-spacing:-0.5px}'
+    +'.p-date{font-size:11px;opacity:.65;margin-top:4px}'
+    +'/* cards */'
+    +'.card{background:white;border-radius:0;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:2px;overflow:hidden}'
+    +'.card-header{background:linear-gradient(90deg,#1e3a8a,#1e40af);color:white;padding:11px 22px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px}'
+    +'.card-body{padding:18px 22px}'
+    +'/* info grid */'
+    +'.info-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #e5e7eb;border-radius:8px;overflow:hidden}'
+    +'.info-cell{display:grid;grid-template-columns:80px 1fr;border-right:1px solid #e5e7eb;border-bottom:1px solid #e5e7eb}'
+    +'.info-cell:nth-child(3n){border-right:none}'
+    +'.info-cell:nth-child(n+4){border-bottom:none}'
+    +'.info-lbl{background:#f9fafb;padding:10px 12px;font-size:11px;font-weight:700;color:#374151;border-right:1px solid #e5e7eb;display:flex;align-items:center}'
+    +'.info-val{padding:10px 14px;font-size:13px;font-weight:600;display:flex;align-items:center}'
+    +'/* eval items */'
+    +'.eval-item{border:1px solid #e5e7eb;border-radius:10px;margin-bottom:12px;overflow:hidden}'
+    +'.eval-item.basic{border-left:3px solid #7c3aed}'
+    +'.eval-item.job{border-left:3px solid #059669}'
+    +'.item-top{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #e5e7eb}'
+    +'.eval-item.basic .item-top{background:#faf5ff}'
+    +'.eval-item.job   .item-top{background:#f0fdf4}'
+    +'.item-num{width:24px;height:24px;border-radius:50%;background:#1e40af;color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}'
+    +'.eval-item.basic .item-num{background:#7c3aed}'
+    +'.eval-item.job   .item-num{background:#059669}'
+    +'.item-cat-badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:700}'
+    +'.eval-item.basic .item-cat-badge{background:#ede9fe;color:#6d28d9}'
+    +'.eval-item.job   .item-cat-badge{background:#dcfce7;color:#047857}'
+    +'.item-name{font-weight:700;font-size:13px}'
+    +'.item-q{padding:9px 16px;color:#374151;font-size:12px;line-height:1.8;border-bottom:1px solid #f3f4f6;background:#fafafa}'
+    +'.score-rows{padding:12px 16px;display:flex;flex-direction:column;gap:8px}'
+    +'.score-row{display:flex;align-items:center;gap:12px}'
+    +'.row-lbl{font-size:11px;font-weight:700;color:#6b7280;width:70px;flex-shrink:0}'
+    +'.sboxes{display:flex;gap:4px;flex-wrap:nowrap}'
+    +'.sbox{width:34px;height:34px;border-radius:7px;border:2px solid #e5e7eb;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}'
+    +'/* opinions */'
+    +'.op-body{padding:0}'
+    +'.op-row{display:grid;grid-template-columns:130px 1fr;border-bottom:1px solid #e5e7eb}'
+    +'.op-row:last-child{border-bottom:none}'
+    +'.op-lbl{background:#f9fafb;padding:14px;font-size:12px;font-weight:700;color:#374151;border-right:1px solid #e5e7eb}'
+    +'.op-val{padding:12px 16px;font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-word}'
+    +'/* totals */'
+    +'.totals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}'
+    +'.total-card{background:#f9fafb;border:1px solid #e5e7eb;border-radius:10px;padding:16px;text-align:center}'
+    +'.final-card{background:linear-gradient(135deg,#1e3a8a,#2563eb)!important;color:white;border-color:transparent}'
+    +'.t-lbl{font-size:11px;color:#6b7280;margin-bottom:4px;font-weight:600}'
+    +'.final-card .t-lbl{color:rgba(255,255,255,.7)}'
+    +'.t-val{font-size:30px;font-weight:900;color:#1e40af;line-height:1}'
+    +'.final-card .t-val{color:white}'
+    +'.t-max{font-size:11px;color:#9ca3af;margin-top:2px}'
+    +'.final-card .t-max{color:rgba(255,255,255,.6)}'
+    +'.t-grade{display:inline-block;margin-top:8px;padding:2px 12px;border-radius:20px;font-size:12px;font-weight:800;background:#dbeafe;color:#1e40af}'
+    +'.final-card .t-grade{background:rgba(255,255,255,.2);color:white}'
+    +'@page{margin:12mm}'
+    +'@media print{'
+    +'body{background:white;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+    +'.psheet{page-break-after:always}'
+    +'.psheet:last-child{page-break-after:auto}'
+    +'.card{box-shadow:none}'
+    +'.p-header,.card-header,.eval-item.basic .item-top,.eval-item.job .item-top,.final-card{-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+    +'}';
+
+  var printHtml='<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>'+period.title+'</title>'
+    +'<style>'+css+'</style></head><body>'
+    +sheets.join('')
+    +'</body></html>';
+
+  var w=window.open('','_blank','width=1000,height=780');
+  if(!w){showToast('❌ 팝업이 차단되었습니다. 팝업 허용 후 다시 시도해주세요');return;}
+  w.document.write(printHtml);
+  w.document.close();
+  w.focus();
+  setTimeout(function(){w.print();},700);
+}
+
+function renderMatchTable() {
+  var users=getUsers(), assign=getAssignments();
+  var table=document.getElementById('admin-match-table');
+  var employees=Object.entries(users).filter(function(e){return e[1].role==='직원'||e[1].role==='리더1';});
+  var l1s=Object.entries(users).filter(function(e){return e[1].role==='리더1'||e[1].role==='관리자';});
+  var l2s=Object.entries(users).filter(function(e){return e[1].role==='리더2'||e[1].role==='관리자';});
+
+  if(employees.length===0){
+    table.innerHTML='<div style="text-align:center;padding:40px;color:var(--gray-500)">직원/1차 평가자 역할의 사용자가 없습니다.<br><small>사용자 관리 탭에서 역할을 먼저 설정해주세요.</small></div>';
+    return;
+  }
+
+  function makeOpt(list, selectedUid, placeholder) {
+    var opts='<option value="">'+placeholder+'</option>';
+    list.forEach(function(e){opts+='<option value="'+e[0]+'"'+(e[0]===selectedUid?' selected':'')+'>'+e[1].name+'('+e[0]+')</option>';});
+    return opts;
+  }
+
+  var html='<p style="font-size:12px;color:var(--gray-500);margin-bottom:12px">피평가자별 평가자를 지정합니다. 직원은 1차·최종 평가자가, 1차 평가자는 최종 평가자가 평가합니다.</p>';
+  html+='<table class="match-table"><thead><tr><th>피평가자</th><th>역할</th><th>부서</th><th>1차 평가자 지정</th><th>최종 평가자 지정</th></tr></thead><tbody>';
+  employees.forEach(function(e) {
+    var uid=e[0], u=e[1];
+    var cur=assign[uid]||{};
+    var isL1=u.role==='리더1';
+    var roleTag='<span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;background:'+(isL1?'#dcfce7;color:#15803d':'#e0e7ff;color:#4338ca')+'">'+(isL1?'1차 평가자':u.role)+'</span>';
+    html+='<tr data-uid="'+uid+'"><td><strong>'+(u.name||'—')+'</strong></td><td>'+roleTag+'</td><td>'+(u.dept||'—')+'</td>';
+    html+='<td>'+(isL1?'<span style="color:var(--gray-300);font-size:12px">해당없음</span>':'<select class="role-select match-l1" data-uid="'+uid+'">'+makeOpt(l1s, cur.l1||'', '— 미지정 —')+'</select>')+'</td>';
+    html+='<td><select class="role-select match-l2" data-uid="'+uid+'">'+makeOpt(l2s, cur.l2||'', '— 미지정 —')+'</select></td></tr>';
+  });
+  html+='</tbody></table>';
+  table.innerHTML=html;
+}
+
+function saveAllMatches() {
+  var assign={};
+  document.querySelectorAll('.match-l1[data-uid]').forEach(function(sel) {
+    var uid=sel.dataset.uid;
+    if(!assign[uid])assign[uid]={};
+    assign[uid].l1=sel.value||null;
+  });
+  document.querySelectorAll('.match-l2[data-uid]').forEach(function(sel) {
+    var uid=sel.dataset.uid;
+    if(!assign[uid])assign[uid]={};
+    assign[uid].l2=sel.value||null;
+  });
+  saveAssignments(assign);
+  var msg=document.getElementById('admin-save-msg'); msg.textContent='✅ 매칭 저장 완료!';
+  setTimeout(function(){msg.textContent='';},2500);
+}
+
+function renderAdminUserTable() {
+  var users=getUsers(), ids=Object.keys(users);
+  var table=document.getElementById('admin-user-table');
+  if(ids.length===0){table.innerHTML='<div style="text-align:center;padding:40px;color:var(--gray-500)">등록된 사용자가 없습니다.</div>';return;}
+  var roleOptions=['직원','리더1','리더2','관리자'];
+  var rc={'직원':'background:#e0e7ff;color:#4338ca','리더1':'background:#dcfce7;color:#15803d','리더2':'background:#fef3c7;color:#b45309','관리자':'background:#fee2e2;color:#991b1b'};
+  var rdn={'직원':'직원','리더1':'1차 평가자','리더2':'최종 평가자','관리자':'관리자'};
+  var html='<table class="admin-table"><thead><tr><th>아이디</th><th>이름</th><th>부서</th><th>직급</th><th>현재 역할</th><th>역할 변경</th><th>비밀번호</th></tr></thead><tbody>';
+  ids.forEach(function(uid) {
+    var u=users[uid];
+    var style=rc[u.role]||'background:#f3f4f6;color:#374151';
+    var opts=roleOptions.map(function(r){return '<option value="'+r+'"'+(u.role===r?' selected':'')+'>'+(rdn[r]||r)+'</option>';}).join('');
+    html+='<tr><td><strong>'+uid+'</strong></td><td>'+(u.name||'—')+'</td><td>'+(u.dept||'—')+'</td><td>'+(u.pos||'—')+'</td>';
+    html+='<td><span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;'+style+'">'+(rdn[u.role]||u.role||'직원')+'</span></td>';
+    html+='<td><select class="user-role-select" data-uid="'+uid+'">'+opts+'</select></td>';
+    html+='<td style="white-space:nowrap"><button class="btn btn-danger-outline" style="font-size:11px;padding:5px 10px" onclick="resetUserPw(\''+uid+'\')">초기화</button> <button class="btn btn-ghost" style="font-size:11px;padding:5px 10px" onclick="openChangeUserPw(\''+uid+'\')">변경</button></td></tr>';
+  });
+  html+='</tbody></table>';
+  table.innerHTML=html;
+}
+
+function saveAllRoles() {
+  var users=getUsers();
+  document.querySelectorAll('.user-role-select[data-uid]').forEach(function(sel){
+    var u=users[sel.dataset.uid]; if(!u)return;
+    u.role=sel.value;
+    // evalRole 자동 도출: 관리자→리더2 고정, 나머지는 role과 동일, 직원은 null
+    u.evalRole=(sel.value==='관리자'?'리더2':sel.value==='직원'?null:sel.value);
+  });
+  saveUsers(users); renderAdminUserTable();
+  var msg=document.getElementById('admin-save-msg'); msg.textContent='✅ 저장 완료!';
+  setTimeout(function(){msg.textContent='';},2500);
+}
+
+var _resetPwUid=null;
+function resetUserPw(uid) {
+  var users=getUsers(); if(!users[uid])return;
+  _resetPwUid=uid;
+  document.getElementById('reset-pw-username').textContent=users[uid].name+' 님 ('+uid+')';
+  document.getElementById('reset-pw-before').style.display='';
+  document.getElementById('reset-pw-after').style.display='none';
+  document.getElementById('reset-pw-overlay').style.display='flex';
+}
+function genRandomPw() {
+  var upper='ABCDEFGHJKLMNPQRSTUVWXYZ';
+  var lower='abcdefghjkmnpqrstuvwxyz';
+  var digits='23456789';
+  var special='!@#$%^&*';
+  var all=upper+lower+digits+special;
+  var pw=[
+    upper[Math.floor(Math.random()*upper.length)],
+    lower[Math.floor(Math.random()*lower.length)],
+    digits[Math.floor(Math.random()*digits.length)],
+    special[Math.floor(Math.random()*special.length)]
+  ];
+  for(var i=4;i<8;i++) pw.push(all[Math.floor(Math.random()*all.length)]);
+  for(var j=pw.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=pw[j];pw[j]=pw[k];pw[k]=t;}
+  return pw.join('');
+}
+function doResetUserPw() {
+  var users=getUsers(); if(!users[_resetPwUid])return;
+  var newPw=genRandomPw();
+  users[_resetPwUid].pw=hashPw(newPw);
+  saveUsers(users);
+  document.getElementById('reset-pw-result').textContent=newPw;
+  document.getElementById('reset-pw-before').style.display='none';
+  document.getElementById('reset-pw-after').style.display='';
+}
+function copyResetPw() {
+  var pw=document.getElementById('reset-pw-result').textContent;
+  if(navigator.clipboard){navigator.clipboard.writeText(pw).then(function(){showToast('📋 복사되었습니다');});}
+  else{var el=document.createElement('textarea');el.value=pw;document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);showToast('📋 복사되었습니다');}
+}
+
+var _chgPwUid=null;
+function openChangeUserPw(uid) {
+  var users=getUsers(); if(!users[uid])return;
+  _chgPwUid=uid;
+  document.getElementById('chg-pw-username').textContent=users[uid].name+' 님 ('+uid+')';
+  document.getElementById('chg-pw-new').value='';
+  document.getElementById('chg-pw-new2').value='';
+  document.getElementById('chg-pw-msg').textContent='';
+  document.getElementById('chg-pw-overlay').style.display='flex';
+  setTimeout(function(){document.getElementById('chg-pw-new').focus();},80);
+}
+function confirmChangeUserPw() {
+  var pw=document.getElementById('chg-pw-new').value;
+  var pw2=document.getElementById('chg-pw-new2').value;
+  var msg=document.getElementById('chg-pw-msg');
+  if(pw.length<4){msg.textContent='4자 이상이어야 합니다.';msg.className='auth-msg error';return;}
+  if(pw!==pw2){msg.textContent='비밀번호가 일치하지 않습니다.';msg.className='auth-msg error';return;}
+  var users=getUsers(); if(!users[_chgPwUid])return;
+  users[_chgPwUid].pw=hashPw(pw);
+  saveUsers(users);
+  document.getElementById('chg-pw-overlay').style.display='none';
+  showToast('✅ '+users[_chgPwUid].name+' 님 비밀번호가 변경되었습니다');
+  _chgPwUid=null;
+}
+
+
+/* ── Save / Load / Data ─────────────────── */
+function collectData() {
+  var data={v:1,info:{},scores:{},opinions:{}};
+  ['dept','pos','name','join','birth','job'].forEach(function(k){data.info[k]=document.getElementById('f-'+k).value;});
+  EVAL_ITEMS.forEach(function(item){
+    data.scores[item.id]={};
+    ROLES.forEach(function(role){var c=document.querySelector('input[name="score-'+item.id+'-'+role.key+'"]:checked');data.scores[item.id][role.key]=c?c.value:null;});
+  });
+  data.opinions.self={achievements:document.getElementById('op-self-achievements').value,strengths:document.getElementById('op-self-strengths').value,improvements:document.getElementById('op-self-improvements').value,plans:document.getElementById('op-self-plans').value};
+  data.opinions.l1={achievements:document.getElementById('op-l1-achievements').value,strengths:document.getElementById('op-l1-strengths').value,improvements:document.getElementById('op-l1-improvements').value};
+  data.opinions.l2={achievements:document.getElementById('op-l2-achievements').value,strengths:document.getElementById('op-l2-strengths').value,improvements:document.getElementById('op-l2-improvements').value};
+  return data;
+}
+
+function applyData(data) {
+  if(!data)return;
+  var info=data.info||{};
+  ['dept','pos','name','join','birth','job'].forEach(function(k){if(info[k])document.getElementById('f-'+k).value=info[k];});
+  var scores=data.scores||{};
+  EVAL_ITEMS.forEach(function(item){
+    if(!scores[item.id])return;
+    ROLES.forEach(function(role){
+      var val=scores[item.id][role.key];
+      if(val!==null&&val!==undefined){var r=document.querySelector('input[name="score-'+item.id+'-'+role.key+'"][value="'+val+'"]');if(r)r.checked=true;}
+    });
+  });
+  var op=data.opinions||{};
+  function applyOp(section,prefix){
+    if(!section)return;
+    ['achievements','strengths','improvements'].forEach(function(k){var el=document.getElementById('op-'+prefix+'-'+k);if(el&&section[k])el.value=section[k];});
+    if(prefix==='self'&&section.plans)document.getElementById('op-self-plans').value=section.plans;
+    if(prefix!=='self'){['yr','mo','dy','sig'].forEach(function(k){var el=document.getElementById(prefix+'-'+k);if(el&&section[k])el.value=section[k];});}
+  }
+  applyOp(op.self,'self'); applyOp(op.l1,'l1'); applyOp(op.l2,'l2');
+  document.querySelectorAll('.op-inp textarea').forEach(function(ta){autoResizeTextarea(ta);});
+  updateUI();
+}
+
+function saveData() {
+  var uid=getSession(); if(!uid){showToast('⚠️ 로그인 후 저장해주세요');return;}
+  if(currentUserRole==='self') {
+    var data=collectData(); data.status=data.status||'draft';
+    try{localStorage.setItem(evalKey(uid),JSON.stringify(data));showToast('💾 임시 저장되었습니다');}catch(e){showToast('❌ 저장 실패'); return;}
+  } else if(currentUserRole==='l1'||currentUserRole==='l2') {
+    if(!currentEvalKey){showToast('⚠️ 평가 대상자를 선택해주세요');return;}
+    var raw=localStorage.getItem(currentEvalKey); if(!raw){showToast('❌ 데이터를 찾을 수 없습니다');return;}
+    var data=JSON.parse(raw), rk=currentUserRole;
+    EVAL_ITEMS.forEach(function(item){var c=document.querySelector('input[name="score-'+item.id+'-'+rk+'"]:checked');if(!data.scores[item.id])data.scores[item.id]={};data.scores[item.id][rk]=c?c.value:null;});
+    if(!data.opinions)data.opinions={};
+    var opData={achievements:document.getElementById('op-'+rk+'-achievements').value,strengths:document.getElementById('op-'+rk+'-strengths').value,improvements:document.getElementById('op-'+rk+'-improvements').value};
+    data.opinions[rk]=opData;
+    try{localStorage.setItem(currentEvalKey,JSON.stringify(data));showToast('💾 저장되었습니다');}catch(e){showToast('❌ 저장 실패');}
+  }
+}
+
+function loadData() {
+  if(currentUserRole==='l1'||currentUserRole==='l2'){showEvalSelector(currentUserRole);return;}
+  var uid=getSession(); if(!uid)return;
+  var raw=localStorage.getItem(evalKey(uid));
+  if(!raw){showToast('📭 저장된 데이터가 없습니다');return;}
+  applyData(JSON.parse(raw)); showToast('📂 불러오기 완료');
+}
+
+function confirmReset(){if(confirm('모든 입력 내용을 초기화하시겠습니까?'))resetForm();}
+function resetForm(){document.querySelectorAll('input[type="radio"]').forEach(function(r){r.checked=false;});document.querySelectorAll('.info-grid input,textarea').forEach(function(el){el.value='';});updateUI();showToast('↩ 초기화 완료');}
+
+/* ── Toast ──────────────────────────────── */
+var toastTimer;
+function showToast(msg){var el=document.getElementById('toast-el');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){el.classList.remove('show');},3000);}
+
+/* ── Textarea auto-resize ───────────────── */
+function autoResizeTextarea(el){el.style.height='auto';el.style.height=el.scrollHeight+'px';}
+document.querySelectorAll('.op-inp textarea, .jd-field textarea').forEach(function(ta){
+  ta.addEventListener('input',function(){autoResizeTextarea(ta);});
+});
+
+/* ── Date auto-format ───────────────────── */
+['f-join','f-birth'].forEach(function(id){
+  var el=document.getElementById(id); if(!el)return;
+  el.addEventListener('input',function(){
+    var digits=this.value.replace(/\D/g,'').slice(0,8);
+    var v=digits;
+    if(digits.length>4)v=digits.slice(0,4)+'-'+digits.slice(4);
+    if(digits.length>6)v=digits.slice(0,4)+'-'+digits.slice(4,6)+'-'+digits.slice(6);
+    this.value=v;
+  });
+});
+
+/* ── Auto-save ──────────────────────────── */
+var autoSaveTimer;
+document.addEventListener('input',function(e){
+  if(e.target.closest&&(e.target.closest('#auth-overlay')||e.target.closest('#admin-overlay')||e.target.closest('#pw-modal-overlay')))return;
+  var uid=getSession(); if(!uid||!currentUserRole)return;
+  clearTimeout(autoSaveTimer);
+  autoSaveTimer=setTimeout(function(){localStorage.setItem(autoSaveKey(uid),JSON.stringify(collectData()));},2000);
+});
+
+/* ── Bootstrap: 강훈 → 관리자 ─────────── */
+(function(){
+  var users=getUsers();
+  var uid=Object.keys(users).find(function(k){return users[k].name==='강훈';});
+  if(uid&&users[uid].role!=='관리자'){users[uid].role='관리자';saveUsers(users);}
+})();
+
+/* ── Init ───────────────────────────────── */
+buildEvalItems();
+updateUI();
+updateHeaderTitle();
+if(!checkSession()){setTimeout(function(){document.getElementById('login-id').focus();},100);}
+</script>
+</body>
+</html>
