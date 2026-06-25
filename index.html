@@ -92,9 +92,6 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
   background: var(--w-color-background-normal);
   border-bottom: 1px solid var(--gray-200);
   padding: 0 32px;
-  position: sticky;
-  top: 0;
-  z-index: 300;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -113,7 +110,7 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 .btn-logout { padding:5px 13px; border-radius:var(--w-radius-button); border:1px solid var(--gray-200); background:white; color:var(--gray-700); font-size:12px; font-weight:600; cursor:pointer; font-family:var(--font-sans); transition:all .15s; }
 .btn-logout:hover { background:var(--gray-50); border-color:var(--gray-300); }
 
-.score-bar { background:white; border-bottom:2px solid var(--primary-light); padding:12px 32px; display:flex; align-items:center; position:sticky; top:64px; z-index:200; box-shadow:var(--w-shadow-normal); }
+.score-bar { background:white; border-bottom:2px solid var(--primary-light); padding:12px 32px; display:flex; align-items:center; position:sticky; top:0; z-index:200; box-shadow:var(--w-shadow-normal); }
 .score-item { display:flex; flex-direction:column; align-items:center; padding:0 20px; gap:1px; }
 .score-label { font-size:11px; color:var(--gray-500); font-weight:500; }
 .score-value { font-size:22px; font-weight:800; color:var(--primary); line-height:1; }
@@ -366,7 +363,7 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 .period-ended-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; background:var(--gray-100); color:var(--gray-500); }
 @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
 /* Main tab bar */
-.main-tab-bar { background:white; border-bottom:2px solid var(--gray-200); padding:0 32px; display:none; position:sticky; top:64px; z-index:190; box-shadow:0 2px 4px rgba(0,0,0,.05); }
+.main-tab-bar { background:white; border-bottom:2px solid var(--gray-200); padding:0 32px; display:none; position:sticky; top:0; z-index:190; box-shadow:0 2px 4px rgba(0,0,0,.05); }
 .main-tab-btn { padding:12px 22px; border:none; background:transparent; font-family:inherit; font-size:14px; font-weight:700; color:var(--gray-500); cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all .2s; }
 .main-tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
 .main-tab-btn:hover:not(.active) { background:var(--gray-50); }
@@ -402,7 +399,7 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
   </svg>
   <div class="header-title-block">
     <h1 id="app-title">직무평가 시스템</h1>
-    <div class="subtitle">본 평가서는 인사비밀로 엄중히 보관됩니다 · 작성 후 저장 버튼을 눌러주세요</div>
+    <div class="subtitle">승진·연봉의 기초자료 · 개인감정 및 외적 요인 배제 · 평가자 본인도 동시 평가됨 · 결과는 인사비밀로 보관</div>
   </div>
   <div class="user-info-badge" id="user-info-badge">
     <div>
