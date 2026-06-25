@@ -91,17 +91,22 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 .app-header {
   background: var(--w-color-background-normal);
   border-bottom: 1px solid var(--gray-200);
-  padding: 0 32px;
+  padding: 0 16px;
+  box-shadow: var(--w-shadow-normal);
+}
+.app-header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 64px;
-  box-shadow: var(--w-shadow-normal);
+  min-height: 72px;
+  padding: 0 16px;
 }
-.header-icon { width:28px; height:28px; flex-shrink:0; color:var(--gray-900); }
+.header-icon { width:32px; height:32px; flex-shrink:0; color:var(--gray-900); }
 .header-title-block { flex:1; min-width:0; }
-.app-header h1 { font-size:20px; font-weight:800; letter-spacing:-0.3px; color:var(--gray-900); line-height:1.3; }
-.app-header .subtitle { font-size:12px; color:var(--gray-500); margin-top:2px; }
+.app-header h1 { font-size:28px; font-weight:800; letter-spacing:-0.5px; color:var(--gray-900); line-height:1.2; }
+.app-header .subtitle { font-size:13px; color:var(--gray-500); margin-top:3px; }
 .company-badge { display:none; }
 
 .user-info-badge { display:none; align-items:center; gap:8px; margin-left:auto; flex-shrink:0; }
@@ -110,7 +115,8 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 .btn-logout { padding:5px 13px; border-radius:var(--w-radius-button); border:1px solid var(--gray-200); background:white; color:var(--gray-700); font-size:12px; font-weight:600; cursor:pointer; font-family:var(--font-sans); transition:all .15s; }
 .btn-logout:hover { background:var(--gray-50); border-color:var(--gray-300); }
 
-.score-bar { background:white; border-bottom:2px solid var(--primary-light); padding:12px 32px; display:flex; align-items:center; position:sticky; top:0; z-index:200; box-shadow:var(--w-shadow-normal); }
+.score-bar { background:white; border-bottom:2px solid var(--primary-light); padding:12px 16px; display:flex; align-items:center; position:sticky; top:0; z-index:200; box-shadow:var(--w-shadow-normal); max-width:100%; }
+.score-bar-inner { max-width:1280px; margin:0 auto; width:100%; display:flex; align-items:center; padding:0 16px; }
 .score-item { display:flex; flex-direction:column; align-items:center; padding:0 20px; gap:1px; }
 .score-label { font-size:11px; color:var(--gray-500); font-weight:500; }
 .score-value { font-size:22px; font-weight:800; color:var(--primary); line-height:1; }
@@ -391,24 +397,26 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 <body>
 
 <header class="app-header">
-  <!-- ClipboardCheck icon (lucide) -->
-  <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
-    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-    <path d="m9 14 2 2 4-4"/>
-  </svg>
-  <div class="header-title-block">
-    <h1 id="app-title">직무평가 시스템</h1>
-    <div class="subtitle">본 평가는 승진과 연봉 계약의 기초자료로 활용되므로 개인 감정 및 업무 외적 요인을 배제하고 공정하게 평가하여 주시고, 평가 결과는 인사비밀로 엄중히 보관됩니다.</div>
-  </div>
-  <div class="user-info-badge" id="user-info-badge">
-    <div>
-      <div class="u-name" id="header-username"></div>
-      <div class="u-dept" id="header-userdept"></div>
+  <div class="app-header-inner">
+    <!-- ClipboardCheck icon (lucide) -->
+    <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+      <path d="m9 14 2 2 4-4"/>
+    </svg>
+    <div class="header-title-block">
+      <h1 id="app-title">직무평가 시스템</h1>
+      <div class="subtitle">본 평가는 승진과 연봉 계약의 기초자료로 활용되므로 개인 감정 및 업무 외적 요인을 배제하고 공정하게 평가하여 주시고, 평가 결과는 인사비밀로 엄중히 보관됩니다.</div>
     </div>
-    <button class="btn-logout" id="btn-admin-panel" onclick="openAdminPanel()" style="display:none">관리자</button>
-    <button class="btn-logout" id="btn-change-pw" onclick="showPwModal()" style="display:none">비밀번호</button>
-    <button class="btn-logout" onclick="doLogout()">로그아웃</button>
+    <div class="user-info-badge" id="user-info-badge">
+      <div>
+        <div class="u-name" id="header-username"></div>
+        <div class="u-dept" id="header-userdept"></div>
+      </div>
+      <button class="btn-logout" id="btn-admin-panel" onclick="openAdminPanel()" style="display:none">관리자</button>
+      <button class="btn-logout" id="btn-change-pw" onclick="showPwModal()" style="display:none">비밀번호</button>
+      <button class="btn-logout" onclick="doLogout()">로그아웃</button>
+    </div>
   </div>
 </header>
 
@@ -641,6 +649,7 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 </div>
 
 <div class="score-bar" id="score-bar">
+  <div class="score-bar-inner">
   <div class="score-item"><span class="score-label">본인평가</span><span class="score-value not-rated" id="bar-self">—</span><span class="score-max">/ 100</span></div>
   <div class="score-divider"></div>
   <div class="score-item"><span class="score-label">1차 평가자 평가</span><span class="score-value not-rated" id="bar-l1">—</span><span class="score-max">/ 100</span></div>
@@ -658,6 +667,7 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
     <button class="btn btn-ghost" onclick="window.print()">🖨️ 인쇄/PDF</button>
     <button class="btn btn-danger-outline" id="btn-reset" onclick="confirmReset()" style="display:none">↩ 초기화</button>
   </div>
+  </div>
 </div>
 
 <div class="submitted-banner" id="submitted-banner">
@@ -666,20 +676,13 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 </div>
 
 <div class="container" id="eval-panel">
-  <!-- 인적사항 -->
-  <div class="card">
-    <div class="card-header"><span>👤</span> 피평가자 인적사항</div>
-    <div class="card-body">
-      <div class="info-grid">
-        <div class="info-cell"><div class="info-label">소&nbsp;&nbsp;&nbsp;속</div><div class="info-input"><input type="text" id="f-dept" placeholder="부서/팀명"></div></div>
-        <div class="info-cell"><div class="info-label">직&nbsp;&nbsp;&nbsp;급</div><div class="info-input"><input type="text" id="f-pos" placeholder="직급"></div></div>
-        <div class="info-cell"><div class="info-label">성&nbsp;&nbsp;&nbsp;명</div><div class="info-input"><input type="text" id="f-name" placeholder="이름"></div></div>
-        <div class="info-cell"><div class="info-label">입사일자</div><div class="info-input"><input type="text" id="f-join" placeholder="예: 2022-03-01" maxlength="10"></div></div>
-        <div class="info-cell"><div class="info-label">생년월일</div><div class="info-input"><input type="text" id="f-birth" placeholder="예: 1990-01-01" maxlength="10"></div></div>
-        <div class="info-cell"><div class="info-label">담당직무</div><div class="info-input"><input type="text" id="f-job" placeholder="담당 직무"></div></div>
-      </div>
-    </div>
-  </div>
+  <!-- 인적사항 hidden (JS 저장·제출·인쇄용) -->
+  <input type="hidden" id="f-dept">
+  <input type="hidden" id="f-pos">
+  <input type="hidden" id="f-name">
+  <input type="hidden" id="f-join">
+  <input type="hidden" id="f-birth">
+  <input type="hidden" id="f-job">
 
 
   <!-- 평가항목 -->
