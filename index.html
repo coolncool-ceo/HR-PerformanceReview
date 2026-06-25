@@ -108,12 +108,15 @@ body { font-family: var(--font-sans); background: white; color: var(--gray-900);
 .header-breadcrumb {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   font-size: 12px;
   color: var(--gray-500);
 }
-.header-breadcrumb svg { width:14px; height:14px; }
-.header-breadcrumb .bc-current { font-weight:600; color:var(--gray-700); }
+.header-breadcrumb .bc-home-link { color: inherit; text-decoration: none; display: inline-flex; align-items: center; transition: color .15s; }
+.header-breadcrumb .bc-home-link:hover { color: var(--gray-900); }
+.header-breadcrumb .bc-home-svg { width:14px; height:14px; }
+.header-breadcrumb .bc-sep-svg { width:12px; height:12px; opacity:.6; }
+.header-breadcrumb .bc-current { font-weight:500; color: var(--gray-900); }
 .header-main-row {
   display: flex;
   align-items: center;
@@ -417,10 +420,12 @@ body { font-family: var(--font-sans); background: white; color: var(--gray-900);
     <!-- 브레드크럼 (우측 상단) -->
     <div class="header-breadcrumb-row">
       <nav class="header-breadcrumb" aria-label="breadcrumb">
-        <!-- Home icon -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <!-- Home icon — 클릭 시 대시보드 홈으로 이동 -->
+        <a class="bc-home-link" href="javascript:void(0)" onclick="window.parent.location.href='/'" title="홈">
+          <svg class="bc-home-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </a>
         <!-- ChevronRight -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.5"><polyline points="9 18 15 12 9 6"/></svg>
+        <svg class="bc-sep-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
         <span class="bc-current">직무평가</span>
       </nav>
     </div>
@@ -1731,8 +1736,8 @@ function updateHeaderTitle(){
   var selected=currentPeriodId?periods.find(function(p){return p.id===currentPeriodId;}):null;
   var ap=getActivePeriod();
   var displayPeriod=selected||ap;
-  var title=displayPeriod?displayPeriod.title:'직무평가 시스템';
-  document.getElementById('app-title').textContent=title;
+  var title=displayPeriod?displayPeriod.title:'직무평가';
+  document.getElementById('app-title').textContent='직무평가';
   document.title=title;
   var authTitle=document.getElementById('auth-title');
   if(authTitle)authTitle.textContent='직무평가';
