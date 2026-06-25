@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2026년 상반기 직무평가 시스템</title>
+<title>직무평가</title>
 <style>
 /* ── Pretendard (CNC Design System) — /fonts/ 는 대시보드 same-origin ── */
 @font-face { font-family:"Pretendard"; src:url("/fonts/Pretendard-Light.woff2") format("woff2");     font-weight:300; font-display:swap; }
@@ -86,7 +86,7 @@
   --gray-900: var(--w-neutral-1900);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); background: var(--w-neutral-100); color: var(--gray-900); font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-sans); background: white; color: var(--gray-900); font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
 
 .app-header {
   background: var(--w-color-background-normal);
@@ -131,7 +131,7 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 .btn-logout { padding:5px 13px; border-radius:var(--w-radius-button); border:1px solid var(--gray-200); background:white; color:var(--gray-700); font-size:12px; font-weight:600; cursor:pointer; font-family:var(--font-sans); transition:all .15s; }
 .btn-logout:hover { background:var(--gray-50); border-color:var(--gray-300); }
 
-.score-bar { background:white; border-bottom:2px solid var(--primary-light); padding:12px 16px; display:flex; align-items:center; position:sticky; top:0; z-index:200; box-shadow:var(--w-shadow-normal); max-width:100%; }
+.score-bar { background:white; border-bottom:2px solid var(--primary-light); padding:12px 16px; display:flex; align-items:center; box-shadow:var(--w-shadow-normal); max-width:100%; }
 .score-bar-inner { max-width:1280px; margin:0 auto; width:100%; display:flex; align-items:center; padding:0 16px; }
 .score-item { display:flex; flex-direction:column; align-items:center; padding:0 20px; gap:1px; }
 .score-label { font-size:11px; color:var(--gray-500); font-weight:500; }
@@ -385,7 +385,7 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 .period-ended-badge { display:inline-flex; align-items:center; gap:5px; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; background:var(--gray-100); color:var(--gray-500); }
 @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
 /* Main tab bar */
-.main-tab-bar { background:white; border-bottom:2px solid var(--gray-200); padding:0 32px; display:none; position:sticky; top:0; z-index:190; box-shadow:0 2px 4px rgba(0,0,0,.05); }
+.main-tab-bar { background:white; border-bottom:2px solid var(--gray-200); padding:0 32px; display:none; box-shadow:0 2px 4px rgba(0,0,0,.05); }
 .main-tab-btn { padding:12px 22px; border:none; background:transparent; font-family:inherit; font-size:14px; font-weight:700; color:var(--gray-500); cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-2px; transition:all .2s; }
 .main-tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
 .main-tab-btn:hover:not(.active) { background:var(--gray-50); }
@@ -454,7 +454,7 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
   <div class="auth-card">
     <div class="auth-brand">
       <div class="brand-badge">🏢 주식회사 쿨앤쿨</div>
-      <h2 id="auth-title">직무평가 시스템</h2>
+      <h2 id="auth-title">직무평가</h2>
       <p>계속하려면 로그인 또는 회원가입을 해주세요</p>
     </div>
     <div class="auth-tabs">
@@ -1735,7 +1735,7 @@ function updateHeaderTitle(){
   document.getElementById('app-title').textContent=title;
   document.title=title;
   var authTitle=document.getElementById('auth-title');
-  if(authTitle)authTitle.textContent='직무평가 시스템';
+  if(authTitle)authTitle.textContent='직무평가';
 }
 
 function renderPeriodAdmin(){
