@@ -91,17 +91,33 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 .app-header {
   background: var(--w-color-background-normal);
   border-bottom: 1px solid var(--gray-200);
-  padding: 0 16px;
   box-shadow: var(--w-shadow-normal);
 }
 .app-header-inner {
   max-width: 1280px;
   margin: 0 auto;
   display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+}
+.header-breadcrumb-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+}
+.header-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--gray-500);
+}
+.header-breadcrumb svg { width:14px; height:14px; }
+.header-breadcrumb .bc-current { font-weight:600; color:var(--gray-700); }
+.header-main-row {
+  display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 80px;
-  padding: 0 16px;
 }
 .header-icon { width:32px; height:32px; flex-shrink:0; color:var(--gray-900); }
 .header-title-block { flex:1; min-width:0; }
@@ -398,24 +414,37 @@ body { font-family: var(--font-sans); background: var(--w-neutral-100); color: v
 
 <header class="app-header">
   <div class="app-header-inner">
-    <!-- ClipboardCheck icon (lucide) -->
-    <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
-      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-      <path d="m9 14 2 2 4-4"/>
-    </svg>
-    <div class="header-title-block">
-      <h1 id="app-title">직무평가</h1>
-      <div class="subtitle">본 평가는 승진 및 연봉계약의 기초자료로 활용되므로, 개인적인 감정이나 업무 외적인 요인을 배제하고 객관적이고 공정하게 평가하여 주시기 바랍니다. 또한 평가 결과는 인사상 비밀사항으로 엄격히 관리·보관됩니다.</div>
+    <!-- 브레드크럼 (우측 상단) -->
+    <div class="header-breadcrumb-row">
+      <nav class="header-breadcrumb" aria-label="breadcrumb">
+        <!-- Home icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <!-- ChevronRight -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="opacity:.5"><polyline points="9 18 15 12 9 6"/></svg>
+        <span class="bc-current">직무평가</span>
+      </nav>
     </div>
-    <div class="user-info-badge" id="user-info-badge">
-      <div>
-        <div class="u-name" id="header-username"></div>
-        <div class="u-dept" id="header-userdept"></div>
+    <!-- 메인 행: 아이콘 + 제목 + 유저 -->
+    <div class="header-main-row">
+      <!-- ClipboardCheck icon -->
+      <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+        <path d="m9 14 2 2 4-4"/>
+      </svg>
+      <div class="header-title-block">
+        <h1 id="app-title">직무평가</h1>
+        <div class="subtitle">본 평가는 승진 및 연봉계약의 기초자료로 활용되므로, 개인적인 감정이나 업무 외적인 요인을 배제하고 객관적이고 공정하게 평가하여 주시기 바랍니다. 또한 평가 결과는 인사상 비밀사항으로 엄격히 관리·보관됩니다.</div>
       </div>
-      <button class="btn-logout" id="btn-admin-panel" onclick="openAdminPanel()" style="display:none">관리자</button>
-      <button class="btn-logout" id="btn-change-pw" onclick="showPwModal()" style="display:none">비밀번호</button>
-      <button class="btn-logout" onclick="doLogout()">로그아웃</button>
+      <div class="user-info-badge" id="user-info-badge">
+        <div>
+          <div class="u-name" id="header-username"></div>
+          <div class="u-dept" id="header-userdept"></div>
+        </div>
+        <button class="btn-logout" id="btn-admin-panel" onclick="openAdminPanel()" style="display:none">관리자</button>
+        <button class="btn-logout" id="btn-change-pw" onclick="showPwModal()" style="display:none">비밀번호</button>
+        <button class="btn-logout" onclick="doLogout()">로그아웃</button>
+      </div>
     </div>
   </div>
 </header>
